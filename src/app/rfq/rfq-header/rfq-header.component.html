@@ -1,0 +1,189 @@
+<!-- <ul class="nav nav-tabs" role="tablist" style="width:100%; background-color:#f5d7c9;">
+  <li class="nav-item">
+    <a [ngClass]="{'active': tabIndex[0], 'nav-link': true }" (click)="tabIndexClick(0)" data-toggle="tab"
+      role="tab">Information</a></li>
+  <li class="nav-item">
+    <a [ngClass]="{'active': tabIndex[1], 'nav-link': true }" (click)="tabIndexClick(1)" data-toggle="tab"
+      role="tab">Documents</a></li>
+  <li class="nav-item">
+    <a [ngClass]="{'active': tabIndex[2], 'nav-link': true }" (click)="tabIndexClick(2)" data-toggle="tab"
+      role="tab">Response</a></li>
+  <li class="nav-item">
+    <a [ngClass]="{'active': tabIndex[3], 'nav-link': true }" (click)="tabIndexClick(3)" data-toggle="tab"
+      role="tab">Pricing</a></li>
+</ul> -->
+<div class="card w-100" *ngIf="tabIndex[0]">
+  <div class="card-header text-right" [ngClass]="{'alert-success' : tabIndex[0]}" (click)="tabIndexClick(0)">
+    <div class="row">
+      <div class="col-7 ">
+        <h5> Information</h5>
+       </div>
+      <div class="col-2 offset-3">
+        <button type="button" class="btn btn-danger btn-sm">Respond-&raquo; </button>
+      </div>
+    </div>
+  </div>
+  <div class="card-body ">
+
+    <div class="row">
+      <div class="col-md-8 col-lg-4 mt-2">
+        <h4>Request for Quotation</h4>
+        <h6>RFQ number: {{ apirfqdoc.currentTender.rfqNo }}</h6>
+        <h6>Cutoff Date: {{ apirfqdoc.currentTender.cutoff }}</h6>
+        <h6>Cutoff Time: {{ apirfqdoc.currentTender.cutofftime }}</h6>
+
+      </div>
+      <div class="col-md-8 offset-lg-3 col-lg-5 mt-2">
+
+        <h4>Contact Us</h4>
+        <h6>Contact person: {{ apirfqdoc.tender.contactName }}</h6>
+        <h6>Email: {{ apirfqdoc.tender.contactEmail }}</h6>
+        <h6>Tel: {{ apirfqdoc.tender.contactTel }}</h6>
+
+      </div>
+    </div>
+    <br />
+    <h6>Brief Summary of Request:</h6>
+    <div class="card" style="background-color: rgb(248, 247, 247);">
+      <div [innerHTML]="lclrequest"></div>
+    </div>
+
+    <div style="margin-top:25px;">
+      <h5> Note:</h5>
+      <h6> This is NOT a Purchase Order</h6>
+
+      <!--  <textarea readonly id="right" rows="8" class="form-control">-->
+      <!--  </textarea>-->
+    </div>
+    <div class="row mb-5 mt-5">
+      <div>
+        <ul class="list-group">
+          <li class="list-group-item" style="background-color: darkblue;">
+            <div class="text-center" >
+              <b style="color:white" > Documents for Download </b>
+            </div>
+          </li>
+          <li class="list-group-item" *ngFor="let rfqdoc of apirfqdoc.biddoclist | async">
+            <div class="row">
+              <div class="col-9">
+                <span style="color:blue;"> {{ rfqdoc.ORIGINALNAME }} </span>
+              </div>
+              <div class="col-2">
+                <button (click)="downloaddoc(rfqdoc)" class="btn btn-sm btn-success">Download</button>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <br />
+    </div>
+  </div>
+  <small> This is a Request for Quotation and Subject to our standard terms and conditions </small>
+</div>
+
+
+<div class="card" *ngIf="!tabIndex[0]">
+  <div class="card-header " [ngClass]="{'alert-success' : !tabIndex[0]}" (click)="tabIndexClick(2)">
+    <div class="row">
+      <div class="col-6">
+        <button type="button" class="btn btn-danger btn-sm">&laquo;-Back to Info..</button>
+      </div>
+      <div class="col-4">
+       <h5>  Response</h5>
+      </div>
+    </div>
+
+  </div>
+  <div>
+    <div class="row mb-5 mt-2">
+
+      <div class="col-md-12 col-lg-8 offset-lg-2">
+
+        <div class="card-body ">
+          <div class="row">
+            <div class="col-4">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio1"
+                  [checked]="tabIndex[4]" (click)="setAccept()">
+                <label class="form-check-label" for="inlineRadio1">We are able to Bid</label>
+              </div>
+            </div>
+            <!-- <div class="col-4">
+              <div class="form-check form-check-inline ml-4">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2"
+                  [checked]="!tabIndex[4]" (click)="setReject()">
+                <label class="form-check-label" for="inlineRadio2">We are unable to Bid</label>
+              </div>
+            </div> -->
+          </div>
+          <div *ngIf="tabIndex[4]">
+            <form [formGroup]="responseform">
+              <div class="card">
+                <div class="card-header text-center" [ngClass]="{'alert-success' : tabIndex[3]}">
+                  <b>Pricing </b>
+                </div>
+                <div>
+                  <app-rfq-items></app-rfq-items>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <small id="emailHelp" class="form-text text-muted">How long after the cut off will your prices be
+                  valid?</small>
+                <input type="text" class="form-control" id="validityperiod" placeholder="e.g. 90 days">
+              </div>
+              <div>
+                Reason or Conditions
+              </div>
+              <div class="form-group">
+                <textarea id="right" rows="4" class="form-control" formControlName="response"></textarea>
+              </div>
+            </form>
+            <div *ngIf="tabIndex[4]">
+              <ul class="list-group">
+                <li class="list-group-item">
+                  <div class="text-center">
+                    <b>Documents uploaded </b>
+                  </div>
+                </li>
+                <li class="list-group-item" *ngFor="let rfqdoc of apirfqdoc.tenderdoclist | async">
+                  <div class="row">
+                    <div class="col-9">
+                      <span> {{ rfqdoc.ORIGINALNAME }} </span>
+                    </div>
+                    <div class="col-2">
+                      <button class="btn btn-sm btn-secondary">Remove</button>
+                    </div>
+                  </div>
+                </li>
+                <li class="list-group-item">
+
+                  <div class="d-flex justify-content-around">
+                    <div>
+                      <label for="file-upload" class="custom-file-upload">
+                        <i class="fa fa-cloud-upload"></i> Upload Response Document
+                      </label>
+                      <input type="file" id="file-upload" (change)="loaddoc($event.target.files)" />
+                      {{myFile}}
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+
+
+          <div class="card-footer">
+            <div class="form-group">
+              <div class="d-flex justify-content-around">
+                <button (click)="tabIndexClick(0)" class="btn btn-outline-danger ">Cancel</button>
+
+                <button (click)="sendresponse()" class="btn btn-outline-primary">Submit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

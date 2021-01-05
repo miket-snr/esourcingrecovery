@@ -1,0 +1,53 @@
+<!-- ******************************************************************* -->
+<div *ngIf="lclRFQItem" class="card mt-2 mb-20">
+  <div class="row">
+    <div class="col-md-6 offset-md-6 col-lg-4 offset-lg-3 col-sm-10 offset-sm-1">
+      <div class="card" style="background-color:lightsteelblue;">
+        <div class="card-body">
+          <b>Requirement: </b><p>
+            {{lclRFQItemCopy.QUANTITY}} of  {{lclRFQItemCopy.MTEXT}}
+          </p>
+          <div [hidden]="submitted">
+
+            <form (ngSubmit)="onSubmit()" [formGroup]="itemForm">
+              <div class="form-group">
+                <label for="price">Total Price - ZAR (Excl VAT)</label>
+                <input type="text" class="form-control" id="price" required formControlName="bidprice"
+                   placeholder="Total Price in ZAR excl VAT">
+              </div>
+              <div class="form-group">
+                <label for="deldate">Lead Time Required</label>
+                <select class="form-control" id="deldate" required  formControlName="leadtime" name="leadtime"
+                  >
+                  <option *ngFor="let vam of vams" [value]="vam">{{vam}}</option>
+                </select>
+
+              </div>
+
+
+              <div class="form-group">
+                <label for="vam">Price Valid for</label>
+                <select class="form-control" id="vam" required  formControlName="validity" >
+                  <option *ngFor="let vam of vams" [value]="vam">{{vam}}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="conditionals">Assumptions and Special Conditions</label>
+                <textarea class="form-control" id="conditionals" placeholder ="Special conditions must be stated here"  formControlName="assumption"></textarea>
+
+              </div>
+
+              <div class="d-flex justify-content-around">
+                <button type="submit" class="btn btn-success" [disabled]="!itemForm.valid">OK</button>
+                <button type="button" class="btn btn-primary" (click)=" resetModal()">Reset</button>
+                <a class="btn btn-outline-danger" (click)="itemForm.reset();resetModal();closeModal()">Cancel</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ******************************************************************* -->
