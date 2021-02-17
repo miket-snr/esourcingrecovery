@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalModule } from './_modal';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 /**
  * Here we don't need to import the AuthModule directly
  * from app.module.ts but rather let the app-routing.module.ts
@@ -20,8 +21,10 @@ import { RfqItemsComponent } from './rfq/rfq-items/rfq-items.component';
 import { RfqItemDetailComponent } from './rfq/rfq-item-detail/rfq-item-detail.component';
 import { RfqHeaderComponent } from './rfq/rfq-header/rfq-header.component';
 import { ImgtopdfComponent } from './_helpers/imgtopdf/imgtopdf.component';
-import { EsourcingComponent } from './esourcing/esourcing.component';;
-import { RfqComponent } from './rfq/rfq.component'
+import { EsourcingComponent } from './esourcing/esourcing.component';
+import { RfqComponent } from './rfq/rfq.component';
+import { StepperComponent } from './rfq/stepper/stepper.component';
+import { RfqInfoComponent } from './rfq/rfq-info/rfq-info.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,7 +34,9 @@ import { RfqComponent } from './rfq/rfq.component'
     RfqItemsComponent,
     ImgtopdfComponent ,
     EsourcingComponent ,
-    RfqComponent],
+    RfqComponent,
+    StepperComponent,
+    RfqInfoComponent],
   imports: [
     BrowserModule,
     FormsModule,
@@ -40,7 +45,8 @@ import { RfqComponent } from './rfq/rfq.component'
     CommonModule,
     ModalModule,
     FileSaverModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgbModule
     // AuthModule
   ],
   providers: [

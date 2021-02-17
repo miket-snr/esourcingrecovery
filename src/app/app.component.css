@@ -1,3 +1,200 @@
 p {
   font-family: Lato;
 }
+a {
+  color: #4F84C4;
+  transition: .3s;
+}
+
+a:hover,
+a:active,
+a:focus {
+  color: #00539C;
+  outline: none;
+  text-decoration: none;
+}
+
+.btn:focus {
+  box-shadow: none;
+}
+
+.wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1366px;
+  margin: 0 auto;
+  background: #ffffff;
+}
+
+.container {
+  max-width: 95%;
+}
+
+
+/*******************************/
+/********** Header CSS *********/
+/*******************************/
+.header {
+  position: relative;
+  width: 100%;
+  padding: 15px 0;
+  border-bottom: 1px solid #eeeeee;
+}
+
+@media (min-width: 1200px) {
+  .header .container-fluid {
+      padding-left: 60px;
+      padding-right: 60px;
+  }
+}
+
+.header .brand {
+  position: relative;
+}
+
+.header .brand img {
+  width: 100%;
+  max-width: 250px;
+  height: 100%;
+  max-height: 100px;
+}
+
+.header .topbar {
+  position: relative;
+  text-align: right;
+}
+
+.header .topbar .topbar-col {
+  display: inline-block;
+  padding: 0 15px;
+  margin-bottom: 15px;
+}
+
+.header .topbar-col a {
+  color: #213546;
+  font-size: 13px;
+}
+
+.header .topbar-col a i {
+  margin-right: 10px;
+  color: #4F84C4;
+}
+
+.header .topbar-social {
+  position: relative;
+}
+
+.header .topbar-social a {
+  display: inline-block;
+}
+
+.header .topbar-social a i {
+  margin-right: 10px;
+  font-size: 18px;
+  color: #bbbbbb;
+}
+
+.header .topbar-social a:last-child i {
+  margin: 0;
+}
+
+.header .topbar-social a:hover i {
+  color: #4F84C4;
+}
+
+.header .dropdown-menu {
+  margin-top: 0;
+  border: 0;
+  border-radius: 0;
+  background: #bbbbbb;
+}
+
+.header .dropdown-menu a.active {
+  color: #4F84C4;
+}
+
+@media (min-width: 992px) {
+  .header .navbar {
+      background: #ffffff !important;
+  }
+
+  .header .navbar-brand {
+      display: none;
+  }
+
+  .header .navbar-light a.nav-link {
+      position: relative;
+      padding: 8px 10px;
+      color: #213546;
+      font-size: 16px;
+      z-index: 1;
+  }
+
+  .header .navbar-light a.nav-link:hover,
+  .header .navbar-light a.nav-link.active {
+      color: #4F84C4;
+  }
+}
+
+@media (max-width: 992px) {
+  .header .brand {
+      text-align: center;
+      margin-bottom: 15px;
+  }
+
+  .header .topbar {
+      text-align: center;
+      margin-bottom: 15px;
+  }
+
+  .header .topbar .topbar-col {
+      margin: 0;
+  }
+
+  .header .topbar .topbar-social {
+      margin-top: 5px;
+  }
+
+  .header .navbar {
+      background: #ffffff !important;
+      border: 1px solid #eeeeee;
+      z-index: 1;
+  }
+
+  .header a.nav-link {
+      padding: 5px 0;
+  }
+
+  .header .dropdown-menu {
+      box-shadow: none;
+  }
+}
+
+.header .navbar .btn {
+  position: relative;
+  margin-left: 15px;
+  padding: 12px 25px 10px 25px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: #ffffff;
+  border: none;
+  border-radius: 30px;
+  background: linear-gradient(#4F84C4, #00539C);
+  transition: .5s;
+}
+
+.header .navbar .btn:hover {
+  background: linear-gradient(#00539C, #4F84C4);
+}
+
+.header .navbar .btn i {
+  font-size: 16px;
+  margin-right: 8px;
+}
+
+@media (max-width: 992px) {
+  .header .navbar .btn {
+      margin: 15px 0 10px 0;
+  }
+}

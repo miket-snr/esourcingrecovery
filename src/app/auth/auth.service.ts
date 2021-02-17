@@ -70,7 +70,7 @@ export class AuthService {
    this.http
      .get<any>(environment.BASE_API + '/api/SAP/RFQ/VALIDURL', { params })
      .subscribe(data => {
-       if (data.ServicesList instanceof Array) {
+       if (data.ServicesList instanceof Array && (data.ServicesList[0] && data.ServicesList[0].JsonsetJstext) ) {
          const tempObj = JSON.parse(data.ServicesList[0].JsonsetJstext);
          if (! tempObj.MESSAGE) {
          lcluser.firstName = tempObj.FIRSTNAME;
@@ -323,6 +323,6 @@ export class AuthService {
   }
   /* ************************************************************* */
   isAuthenticated() {
-    return ( environment.tempuser.username != null || this.token != null || this.rfqtoken != null ) ;
+    return ( this.rfqtoken != null ) ;
   }
 }

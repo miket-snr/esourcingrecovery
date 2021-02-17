@@ -1,0 +1,179 @@
+<div class="container">
+  <div class="row w-100">
+    <div class="card  w-100">
+      <div class="card-header" (click)="tabClick(0)">
+        <h6>Step 1 - Read the Information {{ pointer[0] }}</h6>
+      </div>
+
+      <div class="card-body" style="background-color: aliceblue;" *ngIf="tabIndex[0]">
+        <div class="row">
+          <div class="col-12 text-center mb-4" style="background-color: whitesmoke;">
+            <h4>Request for Quotation {{ apirfqdoc.currentTender.rfqNo }} </h4>
+          </div>
+          <div class="col-lg-5">
+            <h6>Cutoff Date: {{ apirfqdoc.currentTender.cutoff }} at {{ apirfqdoc.currentTender.cutofftime }}</h6>
+            <h6>Contact person: {{ apirfqdoc.tender.contactName }}</h6>
+            <h6>Email: {{ apirfqdoc.tender.contactEmail }}</h6>
+            <h6>Tel: {{ apirfqdoc.tender.contactTel }}</h6>
+          </div>
+          <div class="col-lg-7">
+            <div class="row">
+              <div class="col-8">
+                <b>Information</b>
+                <div class="card " style="background-color: aliceblue; border:none;">
+                  <!-- <div class="card-body"> -->
+                  <div (click)= "modalService.open('requestmore')" [innerHTML]="preview" style="font-size: small;"></div>
+                  <!-- </div>
+                    </div> -->
+
+                    <button (click)="modalService.open('downloaddocs')" class=" btn btn-sm btn-secondary">Download Info
+                      Documents</button>
+
+                </div>
+              </div>
+              <div class="col-4 ">
+
+                <div class="row mt-2">
+                  <button (click)="modalService.open('downloaddocs')" class=" btn btn-sm btn-secondary">Download Info
+                    Documents</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row w-100  d-flex justify-content-center">
+    <div class="card w-100">
+      <div class="card-header" (click)="tabClick(1)">
+        <h6>Step 2 - Quote on the Items {{ pointer[1] }} </h6>
+        <div class="card-body" style=" background-color: aliceblue;" *ngIf="tabIndex[1]">
+          <div class="row pt-4" style="background-color: aliceblue; ">
+            <app-rfq-items></app-rfq-items>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row w-100 mb-1 d-flex justify-content-center">
+    <div class="card w-100">
+      <div class="card-header" (click)="tabClick(2)">
+        <h6>Step 3 - Respond and Upload Documents {{ pointer[2] }}</h6>
+        <div class="card-body" style=" background-color: aliceblue;" *ngIf="tabIndex[2]">
+
+          <form [formGroup]="responseform">
+            <b>
+              Comment or Response
+            </b>
+            <div class="row mt-2  ml-3">
+              <div class="form-group">
+                <textarea id="right" rows="4" cols="80" class="form-control"
+                  placeholder="Additional Response Text can be added here" formControlName="response"></textarea>
+              </div>
+            </div>
+
+
+            <div class="form-group ml-3">
+              <small id="emailHelp" class="form-text text-muted">How long after the cut off will your prices be
+                valid?</small>
+              <input type="text" class="form-control" formControlName="validity" placeholder="e.g. 90 days">
+            </div>
+          </form>
+          <div class="w-100 d-flex justify-content-around">
+            <button (click)="sendresponse()" class="btn btn-outline-primary">Submit Response</button>
+          </div>
+          <div class="row ml-3 mt-4" style="border-top: 1px solid gray; background-color: ghostwhite;">
+            <b>Documents uploaded</b>
+          </div>
+          <div class="row ml-3">
+            <ul class="list-group">
+              <li class="list-group-item" *ngFor="let rfqdoc of apirfqdoc.tenderdoclist | async">
+                <div class="row">
+                  <div class="col-9">
+                    <span> {{ rfqdoc.ORIGINALNAME }} </span>
+                  </div>
+                  <div class="col-2">
+                    <button class="btn btn-sm btn-secondary">Remove</button>
+                  </div>
+                </div>
+              </li>
+              <li class="list-group-item">
+
+                <div class="d-flex justify-content-around">
+                  <div>
+                    <label for="file-upload" class="custom-file-upload">
+                      <i class="fa fa-cloud-upload"></i> Upload Response Document
+                    </label>
+                    <input type="file" id="file-upload" (change)="loaddoc($event.target.files)" />
+                    {{myFile}}
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- <div class="row" style="border-top: 1px solid gray;background-color: aliceblue; ">
+  <div class=" w-100 d-flex justify-content-center mb-2">
+    <h6>Please Respond</h6>
+  </div>
+</div> -->
+
+
+
+
+  <div class="row" style="border-top: 1px solid gray; background-color: ghostwhite;">
+    <b>Note: </b> This is a Request for Quotation and Subject to our standard terms and conditions
+  </div>
+
+</div>
+<jw-modal id="downloaddocs">
+  <div class="container">
+    <div class="row">
+      <b> Documents for Download </b>
+      <ul class="list-group">
+        <!-- <li class="list-group-item" style="background-color: darkblue;">
+          <div class="text-center" >
+            <b style="color:white" > </b>
+          </div>
+        </li> -->
+        <li class="list-group-item" *ngFor="let rfqdoc of apirfqdoc.biddoclist | async">
+          <div class="row">
+            <div class="col-9">
+              <span style="color:blue;"> {{ rfqdoc.ORIGINALNAME }} </span>
+            </div>
+            <div class="col-2">
+              <button (click)="downloaddoc(rfqdoc)" class="btn btn-sm btn-success">Download</button>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="d-flex justify-content-center ">
+      <button class="btn btn-primary" (click)="modalService.close('downloaddocs')">OK</button>
+    </div>
+  </div>
+
+
+
+  <jw-modal id="requestmore">
+    <div class="container">
+      <b>Request Description:</b>
+      <div class="card" style="border:0cm 2px-solid-black;">
+        <p [innerHTML]="lclrequest"></p>
+      </div>
+      <div class="d-flex justify-content-center ">
+        <button class="btn btn-primary" (click)="modalService.close('requestmore')">OK</button>
+      </div>
+    </div>

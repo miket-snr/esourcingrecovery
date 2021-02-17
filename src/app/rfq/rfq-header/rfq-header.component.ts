@@ -6,6 +6,7 @@ import { FileSaverService } from 'ngx-filesaver';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { RfqdataService } from '@app/_dataservices/rfqdata.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ModalService } from '@app/_modal';
 
 @Component({
   selector: 'app-rfq-header',
@@ -17,40 +18,57 @@ export class RfqHeaderComponent implements OnInit, OnDestroy {
   public docsdirection = 'Show Docs for Download';
   public tender: Tender;
   public lclrfqdoc: RFQHeader;
+  public biddoclist = [];
   public rfqControl: RfqControl;
   public lclrequest = '';
+  public preview = '';
+  public showmore = true;
   public myFile: string;
   public chosendoclist: DMSHeader[];
   public hideheader = false;
   public tabIndex = new Array(true, false, false, false, false);
   responseform: FormGroup = this.fb.group({
-    response: [null]
+    response: [null],
+    validity: ''
   });
   constructor(
     public apirfqdoc: RfqAPIService,
     public filesaver: FileSaverService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    public modalService: ModalService
   ) {
 
 
   }
 
   ngOnInit() {
-    if (!this.apirfqdoc.currentTender){
+    if (!this.apirfqdoc.currentTender) {
         this.router.navigate(
           ['esourcing']) ;
     }
     this.tender = this.apirfqdoc.currentTender;
     if (this.tender.response) {
       this.responseform.setValue({
-        response: this.tender.response.response ? this.tender.response.response : ''
-      });
+        response: this.tender.response.response ? this.tender.response.response : '',
+        validity: this.tender.response.validity ? this.tender.response.validity : ''
+            });
       // this.lclrfqdoc = this.tender.rfqNo;
-      this.lclrequest = this.tender.reqText.replace('\\n', '').split('\\n').join('<br />');
+  }
+    const requestarray  = this.tender.reqText.replace('\\n', '').split('\\n');
+
+    if ( requestarray.length > 2) {
+        this.preview = requestarray[0] + '<br />' + requestarray[1] + '.......<b>Read More</b>';
+      } else {
+        this.preview = requestarray.join('<br />');
+        this.showmore = false;
+      }
+    this.lclrequest = requestarray.join('<br />');
+    this.apirfqdoc.biddoclist.asObservable().subscribe( items => {
+      this.biddoclist = items ;
+    });
     }
 
-  }
   // tslint:disable-next-line:use-lifecycle-interface
   ngOnDestroy() {
 
@@ -68,7 +86,19 @@ export class RfqHeaderComponent implements OnInit, OnDestroy {
   }
   public sendresponse(response) {
     // this.apirfqdoc.tenderLine.TAGS = this.responseform.get('response').value;
-    this.apirfqdoc.updateRfqObj();
+    this.apirfqdoc.postResponse(this.responseform.get('response').value).subscribe( data => {
+      this.apirfqdoc.postValidity(this.responseform.get('validity').value).subscribe( data2 => {
+     const x = data2 ;
+     if (response === 'commit') {
+      this.apirfqdoc.postCommit('commit').subscribe( data3 => {
+        const x3 = false;
+        this.router.navigate(['/']);
+          }) ;
+      } else {
+        alert('Changes saved');
+      }
+    });
+    });
 
   }
   previewopen() {
@@ -81,16 +111,31 @@ export class RfqHeaderComponent implements OnInit, OnDestroy {
     // this..chars = '';
     reader.onloadend = e => {
       const dataURL = reader.result;
+      const biddocs = this.apirfqdoc.tenderdoclist.value ;
       //   const contenttype = reader.result.split(',')[0];
       //   /*
       //  //dataService.createDMSDoc(im_content).then(
       //  //    function(data) {
       //  // const lclarr = data.data.ServicesList[0].JsonsetJstext.split(":") ;  */
       //   const d = new Date();
-      const vendor = this.lclrfqdoc.VENDORNO;
-      const docno = this.lclrfqdoc.RFQNO;
+      const docno = this.tender.rfqNo;
+      const vendor = this.tender.guid;
       this.apirfqdoc.uploadQuoteFile2SAP(files, dataURL, docno, vendor);
-      //     .then(function() {
+      biddocs.push(
+      { MANDT: '',
+      APIKEY: '',
+      DOCNO: '',
+      PARTNER: '',
+      COUNTER: '',
+      CONTENT: '',
+      DATELOADED: '',
+      LOADEDBY: '',
+      IMPORTED: '',
+      ORIGINALNAME: this.myFile,
+      FILESIZE: '',
+      MIMETYPE: '',
+      CHARSHOLDER: '' });
+      this.apirfqdoc.tenderdoclist.next(biddocs) ;//     .then(function() {
       //       $location.path('/tenders');
       //     });
       //   //  }) ;

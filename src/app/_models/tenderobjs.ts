@@ -4,12 +4,13 @@ export interface TenderReference {
      bidGuid: string;
 }
 export interface BidItem {
-     itemindex?: string;
-     assumption?: string;
-     bidprice?: number;
-     leadtime?: string;
-     validity?: string;
-     biddate?: string;
+     ITEMNO?: string;
+     ASSUMPTION?: string;
+     BIDPRICE?: number;
+     LEADTIME?: string;
+     VALIDITY?: string;
+     BIDDATE?: string;
+     CLEAN?: boolean;
   }
 
 export interface BidResponse  extends TenderReference {
@@ -42,7 +43,9 @@ export interface TenderItem extends TenderInfo, BidItem {
   }
 
 export interface Tender  extends TenderReference {
-   rfqNo?: string;
+   refNo?: string;
+   refType?: string;
+   rfqNo?: string;
    refText?: string;
    reqText?: string;
    cutoff?: string ;

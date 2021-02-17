@@ -42,12 +42,12 @@ export class RfqItemDetailComponent implements OnInit {
 
   onSubmit() {
     const tempObj = this.itemForm.value;
-    this.lclRFQItemCopy.bidprice = tempObj.bidprice;
-    this.lclRFQItemCopy.validity = tempObj.validity;
-    this.lclRFQItemCopy.leadtime = tempObj.leadtime;
-    this.lclRFQItemCopy.assumption = tempObj.assumption;
+    this.lclRFQItemCopy.BIDPRICE = tempObj.bidprice;
+    this.lclRFQItemCopy.VALIDITY = tempObj.validity;
+    this.lclRFQItemCopy.LEADTIME = tempObj.leadtime;
+    this.lclRFQItemCopy.ASSUMPTION = tempObj.assumption;
     this.apirfq.currentfocusItem.next(this.lclRFQItemCopy);
-    this.apirfq.updateSAPItem(this.lclRFQItemCopy);
+    this.apirfq.postPricing(this.lclRFQItemCopy);
     this.closeModal(this.lclRFQItemCopy);
   }
 
@@ -56,10 +56,10 @@ export class RfqItemDetailComponent implements OnInit {
     if (data) {  this.lclRFQItem = data;
                  this.lclRFQItemCopy = { ...data };
                  this.itemForm.setValue({
-        bidprice: this.lclRFQItem.bidprice,
-        validity: this.lclRFQItem.validity,
-        assumption: this.lclRFQItem.assumption,
-        leadtime: this.lclRFQItem.leadtime
+        bidprice: this.lclRFQItem.BIDPRICE,
+        validity: this.lclRFQItem.VALIDITY,
+        assumption: this.lclRFQItem.ASSUMPTION,
+        leadtime: this.lclRFQItem.LEADTIME
       });
     }
   });

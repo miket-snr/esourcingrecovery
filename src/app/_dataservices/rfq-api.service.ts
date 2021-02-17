@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, ɵɵcontainerRefreshStart } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
@@ -27,7 +27,7 @@ public infoControl: RfqControl;
   public orchlist = { show: 'baselist' };
   public currentRFQList: BehaviorSubject<RFQHeader[]>;
   public rfqList: Observable<RFQHeader[]>;
-
+  public openitems = 0;
   public currentRFQDoc: BehaviorSubject<RFQHeader>;
   public rfqDocobs: Subscription;
   public rfqDoc: RFQHeader;
@@ -73,29 +73,29 @@ public infoControl: RfqControl;
     });
   }
   /***************************************************** */
-  updateRfqObj() {
-  //  this.tenderLine.KEYS = JSON.stringify(this.rfqItems);
-    // Call API //
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type':  'application/json',
-        token: '6g9qGvRxsN',
-      })
-    };
-    const call2 = {
-          context: {
-              CLASS: 'FAQ',
-              TOKEN: '6g9qGvRxsN',
-              METHOD: 'POSTRFQOBJ'
-                },
-           data: this.tenderLine
-      };
-    this.http.post('https://io.bidvestfm.co.za/BIDVESTFM_API_ZRFC/request?sys=dev',
-          call2 , httpOptions).subscribe( data => {
-        console.log('posted');
-      });
+  // updateRfqObj() {
+  // //  this.tenderLine.KEYS = JSON.stringify(this.rfqItems);
+  //   // Call API //
+  //   const httpOptions = {
+  //     headers: new HttpHeaders({
+  //       'Content-Type':  'application/json',
+  //       token: '6g9qGvRxsN',
+  //     })
+  //   };
+  //   const call2 = {
+  //         context: {
+  //             CLASS: 'FAQ',
+  //             TOKEN: '6g9qGvRxsN',
+  //             METHOD: 'POSTRFQOBJ'
+  //               },
+  //          data: this.tenderLine
+  //     };
+  //   this.http.post('https://io.bidvestfm.co.za/BIDVESTFM_API_ZRFC/request?sys=dev',
+  //         call2 , httpOptions).subscribe( data => {
+  //       console.log('posted');
+  //     });
 
-  }
+  // }
   /***************************************************** */
   getRfqList(vendor: string) {
     const lrfqList: RFQHeader[] = [];
@@ -127,7 +127,8 @@ public infoControl: RfqControl;
             const rfqline: RFQHeader = new RFQHeader();
             rfqline.SUBMI = tobj.SUBMI;
             rfqline.RFQNO = tobj.RFQNO;
-            rfqline.CUTOFF = tobj.CUTOFF;
+            rfqline.CUTOFF = tobj.CUTOFF.substring(6, 8) + '/' + tobj.CUTOFF.substring(4, 6) + '/' + tobj.CUTOFF.substring(0, 4) +
+                            '  by ' + tobj.CUTOFFTIME.substring(0, 2) + 'h' + tobj.CUTOFFTIME.substring(2, 4) ;
             rfqline.VENDORNO = tobj.VENDORNO;
             rfqline.VENDOR = tobj.VENDOR;
             rfqline.GUID = tobj.GUID;
@@ -140,7 +141,7 @@ public infoControl: RfqControl;
       });
   }
   /***************************************************** */
-  getRfqItems(rfqno: string, guid = 'UNKOWN' , email = this.currentUser.username) {
+  getRfqItems(rfqno: string, guid = 'UNKOWN' , email = this.auths.currentUserValue.username) {
     const lrfqItems: RFQItem[] = [];
     const lclchosenlist: RFQDocs[] = [];
     const lclsubmilist: RFQDocs[] = [];
@@ -202,26 +203,71 @@ public infoControl: RfqControl;
 
        return this.tenderLine ;
       }));
-     /*   if (data.ServicesList instanceof Array) {
-          for (const rfqdoc of data.ServicesList) {
-            const tobj = JSON.parse(rfqdoc.JSONSET_JSTEXT);
-            const rfqItem: RFQItem = new RFQItem();
-            rfqItem.SUBMI = tobj.SUBMI;
-            rfqItem.RFQNO = tobj.RFQNO;
-            rfqItem.ITEMNO = tobj.ITEMNO;
-            rfqItem.CUTOFF = tobj.CUTOFF;
-            rfqItem.DELIVERYDATE = tobj.DELIVERYDATE;
-            rfqItem.MTEXT = tobj.MTEXT;
-            rfqItem.QUANTITY = tobj.QUANTITY;
-            rfqItem.MATERIAL = tobj.MATERIAL;
-            rfqItem.UNIT = tobj.UNIT;
-            rfqItem.PRICE = tobj.PROMISEPRICE;
-            lrfqItems.push(rfqItem);
-          }
-          this.currentRFQItems.next(lrfqItems);
-          this.getRfqAttachments(rfqno);
-        }*/
   }
+  /***************************************************** */
+  postValidity(validity: string) {
+   return this.postBidItems( 'VALIDITY' , validity );
+  }
+
+  /***************************************************** */
+   postResponse(responsetext: string) {
+   return this.postBidItems('RESPONSETEXT' , responsetext );
+  }
+  /***************************************************** */
+   postRejection(responsetext: string) {
+    return this.postBidItems('REJECTION' , responsetext );
+   }
+  /***************************************************** */
+   postCommit(responsetext: string) {
+     return this.postBidItems('COMMIT' , responsetext );
+    }
+  /***************************************************** */
+  postPricing(pricing: TenderItem) {
+    const pricelist: BidItem[] = [] ;
+    //JSON.parse(this.tenderLine.value.KEYS);
+    let prices = '';
+    const date = new Date();
+    const mm = date.getMonth() + 1; // getMonth() is zero-based
+    const dd = date.getDate();
+    const lcldatestr = [date.getFullYear(),
+      (mm > 9 ? '' : '0') + mm,
+      (dd > 9 ? '' : '0') + dd
+     ].join('');
+    pricelist.push({ITEMNO: pricing.ITEMNO, ASSUMPTION: pricing.ASSUMPTION, LEADTIME: pricing.LEADTIME,
+                      BIDPRICE: pricing.BIDPRICE, VALIDITY: pricing.VALIDITY, BIDDATE: lcldatestr });
+    prices = JSON.stringify(pricelist);
+    this.postBidItems('PRICE' , prices ).subscribe(data => {
+      let x = data;
+    });
+
+    }
+  /***************************************************** */
+  postBidItems(fieldname = '' , fieldvalue = '') {
+    const context = '{' + 'RFQNO:' + this.tenderLine.value.CONTEXT + ',GUID:' + this.tenderLine.value.GUID  +
+    ',EMAIL:' + this.currentUser.username + ',FIELD:' + fieldname + ' }';
+
+
+    const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          token: 'BK175mqMN0',
+        })
+      };
+    const call2 = {
+      context: {
+          CLASS: 'FAQ',
+          TOKEN: 'BK175mqMN0',
+          METHOD: 'RFQ_RESPONSE'
+      },
+      data: {
+          REF: fieldvalue,
+          CONTEXT: context
+      }
+  };
+    return this.http.post<any>('https://io.bidvestfm.co.za/BIDVESTFM_API_ZRFC/request?sys=dev',
+  call2 , httpOptions);
+  }
+  /*************************************************/
   buildTender() {
 
     if (this.tenderHeader && this.tenderLine) {
@@ -232,14 +278,17 @@ public infoControl: RfqControl;
     this.tender.tenderItems =  [];
     info.forEach(element => {
      const tempbid = bid.find(el => {
-       return el.itemindex === element.ITEMNO ;
-     }) || { itemindex: element.ITEMNO, assumption: '', bidprice: 0, leadtime: '', validity: '', biddate: '', clean: true} ;
+       return el.ITEMNO === element.ITEMNO ;
+     }) || {ITEMNO: element.ITEMNO, ASSUMPTION: '', BIDPRICE: 0, LEADTIME: '', VALIDITY: '', BIDDATE: '', clean: true} ;
+     tempbid.ASSUMPTION = tempbid.ASSUMPTION.replace(/\\n/g, '\n');
      this.tender.tenderItems.push({...element, ...tempbid});
     });
     this.tender.response = {acceptance: '', validity: '', response: ''} ;
     this.tender.rfqNo = this.tenderLine.value.CONTEXT;
     this.tender.refText = this.tenderHeader.value.TAGS;
     this.tender.reqText = this.tenderHeader.value.TAGS;
+    this.tender.refNo = this.tenderHeader.value.OBJ;
+    this.tender.refType = this.tenderHeader.value.SUB_CONTEXT;
     const controldates: RfqControl = JSON.parse(this.tenderHeader.value.DATA) ;
     this.tender.cutoff = controldates.CUTOFFDATE ;
     this.tender.cutofftime = controldates.CUTOFFTIME ;
@@ -247,8 +296,9 @@ public infoControl: RfqControl;
     this.tender.contactEmail = controldates.CONTACTMAIL;
     this.tender.contactTel = controldates.CONTACTTEL;
     this.tender.contactName = controldates.CONTACTNAME ;
+    const responsetemp = JSON.parse(this.tenderLine.value.DATA) ;
    // tslint:disable-next-line:max-line-length
-    this.tender.response = { acceptance: 'true', validity: '', response: this.tenderLine.value.TAGS  };
+    this.tender.response = { acceptance: 'true', validity: responsetemp.VALIDITY , response: this.tenderLine.value.TAGS.replace(/\\n/g, '\n') };
     } else {
      this.tender =  { guid: 'na', email: 'na', bidGuid: 'na' };
     }
@@ -340,36 +390,36 @@ getvendordoc(docref: DMSHeader) {
       });
   }
   /***************************************************** */
-UpdateRfqItem(itemno: string) {
-    const lrfqItems: RFQItem[] = [];
-    const context = itemno;
-    const params = new HttpParams()
-      .set('Partner', 'ALL')
-      .set('Class', 'RFQL')
-      .set('CallContext', context);
-    this.http
-      .get<any>(environment.BASE_API + '/api/GETFLEX', { params })
-      .subscribe(data => {
-        // if (data.ServicesList instanceof Array) {
-        //   for (const rfqdoc of data.ServicesList) {
-        //     const tobj = JSON.parse(rfqdoc.JSONSET_JSTEXT);
-        //     const rfqItem: RFQItem = {};
-        //     rfqItem.SUBMI = tobj.SUBMI;
-        //     rfqItem.RFQNO = tobj.RFQNO;
-        //     rfqItem.ITEMNO = tobj.ITEMNO;
-        //     rfqItem.CUTOFF = tobj.CUTOFF;
-        //     rfqItem.MTEXT = tobj.MTEXT;
-        //     rfqItem.QUANTITY = tobj.PROMISEQTY;
-        //     rfqItem.PRICE = tobj.PROMISEPRICE;
-        //     lrfqItems.push(rfqItem);
-        //   }
-        //   this.currentRFQItems.next(lrfqItems);
-        // }
-      });
-  }
+// UpdateRfqItem(itemno: string) {
+//     const lrfqItems: RFQItem[] = [];
+//     const context = itemno;
+//     const params = new HttpParams()
+//       .set('Partner', 'ALL')
+//       .set('Class', 'RFQL')
+//       .set('CallContext', context);
+//     this.http
+//       .get<any>(environment.BASE_API + '/api/GETFLEX', { params })
+//       .subscribe(data => {
+//         // if (data.ServicesList instanceof Array) {
+//         //   for (const rfqdoc of data.ServicesList) {
+//         //     const tobj = JSON.parse(rfqdoc.JSONSET_JSTEXT);
+//         //     const rfqItem: RFQItem = {};
+//         //     rfqItem.SUBMI = tobj.SUBMI;
+//         //     rfqItem.RFQNO = tobj.RFQNO;
+//         //     rfqItem.ITEMNO = tobj.ITEMNO;
+//         //     rfqItem.CUTOFF = tobj.CUTOFF;
+//         //     rfqItem.MTEXT = tobj.MTEXT;
+//         //     rfqItem.QUANTITY = tobj.PROMISEQTY;
+//         //     rfqItem.PRICE = tobj.PROMISEPRICE;
+//         //     lrfqItems.push(rfqItem);
+//         //   }
+//         //   this.currentRFQItems.next(lrfqItems);
+//         // }
+//       });
+//   }
   /******************************************* */
 uploadQuoteFile2SAP(file, resultobj, filerefer, vendor) {
-    const data = resultobj.split(',').pop();
+    const filedata = resultobj.split(',').pop();
 
     const httpOptions = {
       headers: new HttpHeaders({
@@ -387,7 +437,7 @@ uploadQuoteFile2SAP(file, resultobj, filerefer, vendor) {
         fileName: file[0].name,
         fileSize: file[0].size,
         fileType: file[0].type,
-        fileContent: data,
+        fileContent: filedata,
         uname: this.currentUser.username,
         targetObjId: filerefer,
         targetObjType: 'RFQDOC',
@@ -400,6 +450,7 @@ uploadQuoteFile2SAP(file, resultobj, filerefer, vendor) {
       .subscribe(
         data => {
           console.log(data);
+
         },
         e => {
           console.log(e);
@@ -407,47 +458,47 @@ uploadQuoteFile2SAP(file, resultobj, filerefer, vendor) {
       );
   }
   /*********************************** */
-updateSAPItem(line: TenderItem) {
-    let lcldatestr = '';
-    const date = new Date();
-    const mm = date.getMonth() + 1; // getMonth() is zero-based
-    const dd = date.getDate();
+// updateSAPItem(line: TenderItem) {
+//     let lcldatestr = '';
+//     const date = new Date();
+//     const mm = date.getMonth() + 1; // getMonth() is zero-based
+//     const dd = date.getDate();
 
-    lcldatestr = [date.getFullYear(),
-            (mm > 9 ? '' : '0') + mm,
-            (dd > 9 ? '' : '0') + dd
-           ].join('');
+//     lcldatestr = [date.getFullYear(),
+//             (mm > 9 ? '' : '0') + mm,
+//             (dd > 9 ? '' : '0') + dd
+//            ].join('');
 
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: 'Basic dXNlcm5hbWU6cGFzc3dvcmQ='
-      })
-    };
-    const uploadvar = {
-      callType: 'post',
-      chContext: {
-        CLASS: 'UPDATEQUOTE',
-        METHOD: 'RFQP'
-      },
-      chData: {
-        EBELN: this.tenderHeader.value.OBJ,
-        EBELP: line.ITEMNO,
-        NETPR: line.bidprice,
-        EINDT: lcldatestr,
-        KTMNG: line.QUANTITY,
-        CREATEDBY: this.currentUser.username
-      }
-    };
-    this.http
-      .post<any>(environment.BASE_POST, uploadvar, httpOptions)
-      .subscribe(
-        data => {
-          console.log(data);
-        },
-        e => {
-          console.log(e);
-        }
-      );
-  }
+//     const httpOptions = {
+//       headers: new HttpHeaders({
+//         'Content-Type': 'application/json',
+//         Authorization: 'Basic dXNlcm5hbWU6cGFzc3dvcmQ='
+//       })
+//     };
+//     const uploadvar = {
+//       callType: 'post',
+//       chContext: {
+//         CLASS: 'UPDATEQUOTE',
+//         METHOD: 'RFQP'
+//       },
+//       chData: {
+//         EBELN: this.tenderHeader.value.OBJ,
+//         EBELP: line.ITEMNO,
+//         NETPR: line.BIDPRICE,
+//         EINDT: lcldatestr,
+//         KTMNG: line.QUANTITY,
+//         CREATEDBY: this.currentUser.username
+//       }
+//     };
+//     this.http
+//       .post<any>(environment.BASE_POST, uploadvar, httpOptions)
+//       .subscribe(
+//         data => {
+//           console.log(data);
+//         },
+//         e => {
+//           console.log(e);
+//         }
+//       );
+//   }
 }

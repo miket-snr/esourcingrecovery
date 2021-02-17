@@ -17,13 +17,16 @@ export class EsourcingComponent implements OnInit {
   public chosenlist = [];
  // public orchlist = { show: 'baselist' };
   constructor(private authservice: AuthService, public rfqapis: RfqAPIService, private router: Router, private route: ActivatedRoute) {
-    this.rfqapis.getRfqList(this.rfqapis.currentUser.username);
+
  //   this.orchlist = this.rfqapis.orchlist;
   }
 
   // tslint:disable-next-line:use-lifecycle-interface
   ngOnInit() {
-    this.user = this.authservice.currentUserValue;
+    this.authservice.currentUser.subscribe(datauser => {
+      this.user = datauser ;
+      this.rfqapis.getRfqList(datauser.email);
+    });
     this.authservice.checksignon();
   }
   chooselist(item) {

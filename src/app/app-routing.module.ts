@@ -9,6 +9,7 @@ import { RfqComponent } from './rfq/rfq.component';
 import { RfqHeaderComponent } from './rfq/rfq-header/rfq-header.component';
 import { RfqItemDetailComponent } from './rfq/rfq-item-detail/rfq-item-detail.component';
 import { RfqItemsComponent } from './rfq/rfq-items/rfq-items.component';
+import { StepperComponent } from './rfq/stepper/stepper.component';
 
 const appRoutes: Routes = [
   { path: '', component: EsourcingComponent, canActivate: [AuthGuard] },
@@ -17,6 +18,7 @@ const appRoutes: Routes = [
   { path: 'esourcing/rfqheader', component: RfqHeaderComponent, canActivate: [AuthGuard]},
   { path: 'esourcing/rfqitems', component: RfqItemsComponent, canActivate: [AuthGuard]},
   { path: 'esourcing/biditem', component: RfqItemDetailComponent, canActivate: [AuthGuard]},
+  { path: 'esourcing/rfq/stepper', component: StepperComponent, canActivate: [AuthGuard]},
   { path: 'topdf', component: ImgtopdfComponent, canActivate: [AuthGuard] },
   { path: 'auth', loadChildren: './auth/auth.module#AuthModule' },
 

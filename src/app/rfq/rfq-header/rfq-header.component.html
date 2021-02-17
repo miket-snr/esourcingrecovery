@@ -1,189 +1,173 @@
-<!-- <ul class="nav nav-tabs" role="tablist" style="width:100%; background-color:#f5d7c9;">
-  <li class="nav-item">
-    <a [ngClass]="{'active': tabIndex[0], 'nav-link': true }" (click)="tabIndexClick(0)" data-toggle="tab"
-      role="tab">Information</a></li>
-  <li class="nav-item">
-    <a [ngClass]="{'active': tabIndex[1], 'nav-link': true }" (click)="tabIndexClick(1)" data-toggle="tab"
-      role="tab">Documents</a></li>
-  <li class="nav-item">
-    <a [ngClass]="{'active': tabIndex[2], 'nav-link': true }" (click)="tabIndexClick(2)" data-toggle="tab"
-      role="tab">Response</a></li>
-  <li class="nav-item">
-    <a [ngClass]="{'active': tabIndex[3], 'nav-link': true }" (click)="tabIndexClick(3)" data-toggle="tab"
-      role="tab">Pricing</a></li>
-</ul> -->
-<div class="card w-100" *ngIf="tabIndex[0]">
-  <div class="card-header text-right" [ngClass]="{'alert-success' : tabIndex[0]}" (click)="tabIndexClick(0)">
-    <div class="row">
-      <div class="col-7 ">
-        <h5> Information</h5>
-       </div>
-      <div class="col-2 offset-3">
-        <button type="button" class="btn btn-danger btn-sm">Respond-&raquo; </button>
+<div class="mt-3">
+  <div class="row" style="background-color: aliceblue;">
+    <div class="col-12 text-center mb-4" style="background-color: whitesmoke;">
+      <h4>Request for Quotation {{ apirfqdoc.currentTender.refNo }} </h4>
+    </div>
+    <div class="col-lg-6">
+      <h6><b>Reference:</b> {{ apirfqdoc.currentTender.refType + '-' + apirfqdoc.currentTender.refNo  }} </h6>
+      <h6><b>Cutoff Date:</b> {{ apirfqdoc.currentTender.cutoff }} at {{ apirfqdoc.currentTender.cutofftime }}</h6>
+      <h6><b>Contact person: </b> {{ apirfqdoc.tender.contactName }}</h6>
+      <h6><b>Email:</b> {{ apirfqdoc.tender.contactEmail }}</h6>
+      <h6><b>Tel:</b> {{ apirfqdoc.tender.contactTel }}</h6>
+    </div>
+    <div class="col-lg-6">
+      <div class="row">
+        <app-rfq-info  [infoinput]="tender.reqText"></app-rfq-info>
+      </div>
+        <div  class="row mt-2">
+          <button (click)="modalService.open('downloaddocs')" class=" btn btn-sm btn-outline-primary">Download Info
+            Documents</button>
+         </div>
       </div>
     </div>
   </div>
-  <div class="card-body ">
 
-    <div class="row">
-      <div class="col-md-8 col-lg-4 mt-2">
-        <h4>Request for Quotation</h4>
-        <h6>RFQ number: {{ apirfqdoc.currentTender.rfqNo }}</h6>
-        <h6>Cutoff Date: {{ apirfqdoc.currentTender.cutoff }}</h6>
-        <h6>Cutoff Time: {{ apirfqdoc.currentTender.cutofftime }}</h6>
-
-      </div>
-      <div class="col-md-8 offset-lg-3 col-lg-5 mt-2">
-
-        <h4>Contact Us</h4>
-        <h6>Contact person: {{ apirfqdoc.tender.contactName }}</h6>
-        <h6>Email: {{ apirfqdoc.tender.contactEmail }}</h6>
-        <h6>Tel: {{ apirfqdoc.tender.contactTel }}</h6>
-
-      </div>
-    </div>
-    <br />
-    <h6>Brief Summary of Request:</h6>
-    <div class="card" style="background-color: rgb(248, 247, 247);">
-      <div [innerHTML]="lclrequest"></div>
-    </div>
-
-    <div style="margin-top:25px;">
-      <h5> Note:</h5>
-      <h6> This is NOT a Purchase Order</h6>
-
-      <!--  <textarea readonly id="right" rows="8" class="form-control">-->
-      <!--  </textarea>-->
-    </div>
-    <div class="row mb-5 mt-5">
-      <div>
-        <ul class="list-group">
-          <li class="list-group-item" style="background-color: darkblue;">
-            <div class="text-center" >
-              <b style="color:white" > Documents for Download </b>
-            </div>
-          </li>
-          <li class="list-group-item" *ngFor="let rfqdoc of apirfqdoc.biddoclist | async">
-            <div class="row">
-              <div class="col-9">
-                <span style="color:blue;"> {{ rfqdoc.ORIGINALNAME }} </span>
-              </div>
-              <div class="col-2">
-                <button (click)="downloaddoc(rfqdoc)" class="btn btn-sm btn-success">Download</button>
-              </div>
-            </div>
-          </li>
-        </ul>
-      </div>
-      <br />
-    </div>
+<!-- <div class="row" style="border-top: 1px solid gray;background-color: aliceblue; ">
+  <div class=" w-100 d-flex justify-content-center mb-2">
+    <h6>Please Respond</h6>
   </div>
-  <small> This is a Request for Quotation and Subject to our standard terms and conditions </small>
-</div>
-
-
-<div class="card" *ngIf="!tabIndex[0]">
-  <div class="card-header " [ngClass]="{'alert-success' : !tabIndex[0]}" (click)="tabIndexClick(2)">
-    <div class="row">
-      <div class="col-6">
-        <button type="button" class="btn btn-danger btn-sm">&laquo;-Back to Info..</button>
-      </div>
-      <div class="col-4">
-       <h5>  Response</h5>
-      </div>
-    </div>
+</div> -->
+<div class="row pt-4 mb-2" style="background-color: aliceblue; ">
+  <div class="col-lg-6">
+    <app-rfq-items></app-rfq-items>
 
   </div>
-  <div>
-    <div class="row mb-5 mt-2">
-
-      <div class="col-md-12 col-lg-8 offset-lg-2">
-
-        <div class="card-body ">
-          <div class="row">
-            <div class="col-4">
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio1"
-                  [checked]="tabIndex[4]" (click)="setAccept()">
-                <label class="form-check-label" for="inlineRadio1">We are able to Bid</label>
-              </div>
-            </div>
-            <!-- <div class="col-4">
-              <div class="form-check form-check-inline ml-4">
-                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2"
-                  [checked]="!tabIndex[4]" (click)="setReject()">
-                <label class="form-check-label" for="inlineRadio2">We are unable to Bid</label>
-              </div>
-            </div> -->
-          </div>
-          <div *ngIf="tabIndex[4]">
-            <form [formGroup]="responseform">
-              <div class="card">
-                <div class="card-header text-center" [ngClass]="{'alert-success' : tabIndex[3]}">
-                  <b>Pricing </b>
-                </div>
-                <div>
-                  <app-rfq-items></app-rfq-items>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <small id="emailHelp" class="form-text text-muted">How long after the cut off will your prices be
-                  valid?</small>
-                <input type="text" class="form-control" id="validityperiod" placeholder="e.g. 90 days">
-              </div>
-              <div>
-                Reason or Conditions
-              </div>
-              <div class="form-group">
-                <textarea id="right" rows="4" class="form-control" formControlName="response"></textarea>
-              </div>
-            </form>
-            <div *ngIf="tabIndex[4]">
-              <ul class="list-group">
-                <li class="list-group-item">
-                  <div class="text-center">
-                    <b>Documents uploaded </b>
-                  </div>
-                </li>
-                <li class="list-group-item" *ngFor="let rfqdoc of apirfqdoc.tenderdoclist | async">
-                  <div class="row">
-                    <div class="col-9">
-                      <span> {{ rfqdoc.ORIGINALNAME }} </span>
-                    </div>
-                    <div class="col-2">
-                      <button class="btn btn-sm btn-secondary">Remove</button>
-                    </div>
-                  </div>
-                </li>
-                <li class="list-group-item">
-
-                  <div class="d-flex justify-content-around">
-                    <div>
-                      <label for="file-upload" class="custom-file-upload">
-                        <i class="fa fa-cloud-upload"></i> Upload Response Document
-                      </label>
-                      <input type="file" id="file-upload" (change)="loaddoc($event.target.files)" />
-                      {{myFile}}
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-
-
-          <div class="card-footer">
-            <div class="form-group">
-              <div class="d-flex justify-content-around">
-                <button (click)="tabIndexClick(0)" class="btn btn-outline-danger ">Cancel</button>
-
-                <button (click)="sendresponse()" class="btn btn-outline-primary">Submit</button>
-              </div>
-            </div>
-          </div>
+  <div class="col-lg-6">
+    <form [formGroup]="responseform">
+      <b>
+        Comment or Response
+      </b>
+      <div class="row mt-2  ml-3">
+        <div class="form-group">
+          <textarea id="right" rows="4" cols="80" class="form-control"
+            placeholder="Additional Response Text can be added here" formControlName="response"></textarea>
         </div>
       </div>
+
+
+      <div class="form-group ml-3">
+        <small id="emailHelp" class="form-text text-muted">How long after the cut off will your prices be
+          valid?</small>
+        <input type="text" class="form-control" formControlName="validity" placeholder="e.g. 90 days">
+      </div>
+    </form>
+    <!-- <div class="w-100 d-flex justify-content-around">
+      <button (click)="sendresponse('all')" class="btn btn-outline-primary">Submit Response</button>
+    </div> -->
+    <div class="row w-100 d-flex justify-content-center mt-4 text-center" style="border-top: 1px solid gray; background-color: ghostwhite;">
+      <b>Documents uploaded</b>
+    </div>
+    <div class="row w-100 ml-3">
+      <ul class="w-100 list-group">
+        <li class="list-group-item" *ngFor="let rfqdoc of apirfqdoc.tenderdoclist | async">
+          <div class="row">
+            <div class="col-9">
+              <span> {{ rfqdoc.ORIGINALNAME }} </span>
+            </div>
+            <div class="col-2">
+              <button class="btn btn-sm btn-secondary">Remove</button>
+            </div>
+          </div>
+        </li>
+        <li class="list-group-item">
+
+          <div class="d-flex justify-content-around">
+            <div>
+              <label for="file-upload" class="custom-file-upload">
+                <i class="fa fa-cloud-upload"></i> Upload Response Document
+              </label>
+              <input type="file" id="file-upload" (change)="loaddoc($event.target.files)" />
+              {{myFile}}
+            </div>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
+</div>
+<div class="row mt-2 pt-2 pb-2 d-flex justify-content-around" style="border-top: 1px solid gray; background-color: lightsteelblue;">
+  <a  [routerLink]='["/"]' class="btn btn-sm btn-secondary"  ngbTooltip="Remember to save ">
+    Home
+  </a>
+  <button  (click)="sendresponse('commit')" *ngIf="(apirfqdoc.openitems != 0)"
+  class="btn btn-sm btn-primary"  ngbTooltip="Mark as Complete and ready for evaluation">
+    Confirm Complete
+  </button>
+  <button  (click)="sendresponse('all')"
+    *ngIf="!(apirfqdoc.openitems != 0)"
+    class="btn btn-sm btn-primary"
+    ngbTooltip="Save on SAP when incomplete">
+    Save as Draft
+  </button>
+  <button  class="btn btn-sm btn-danger" (click)="modalService.open('rejection')"
+  ngbTooltip="Remove yourself from this Tender list">
+    Reject - Not Quoting
+  </button>
+</div>
+<div class="row" style=" display:block; border-top: 1px solid gray; background-color: lightsteelblue;">
+  <b>Note: </b><small> This is a Request for Quotation and Subject to our standard terms and conditions </small>
+</div>
+
+<jw-modal id="rejection">
+  <div class="container text-center">
+    <h2> Reason for Rejection </h2>
+    <p>We are sorry to not have your Quotation?</p>
+    <p>Please inform us of why are you unable to quote?</p>
+    <div class="form-check">
+      <label class="form-check-label">
+        <input type="checkbox" class="form-check-input" value="">We are able to quote in other Tenders
+      </label>
+    </div>
+    <hr>
+    <div class="form-group">
+      <textarea id="right2" rows="4" cols="80" class="form-control"
+        placeholder="Text explaining Rejection can be added here" ></textarea>
+    </div>
+    <div class="row d-flex justify-content-around">
+      <button class="btn btn-sm btn-primary">Confirm Rejection</button>
+      <button class="btn btn-sm btn-danger">Cancel</button>
+    </div>
+  </div>
+</jw-modal>
+
+<jw-modal id="downloaddocs">
+  <div class="container text-center">
+
+      <h2> Documents for Download </h2>
+      <hr>
+      <div class="row d-flex justify-content-center">
+      <ul class="list-group">
+        <!-- <li class="list-group-item" style="background-color: darkblue;">
+          <div class="text-center" >
+            <b style="color:white" > </b>
+          </div>
+        </li> -->
+        <li class="list-group-item" *ngFor="let rfqdoc of apirfqdoc.biddoclist | async">
+          <div class="row">
+            <div class="col-9">
+              <span style="color:blue;"> {{ rfqdoc.ORIGINALNAME }} </span>
+            </div>
+            <div class="col-2">
+              <button (click)="downloaddoc(rfqdoc)" class="btn btn-sm btn-success">Download</button>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="mt-5 d-flex justify-content-center ">
+      <button class="btn btn-primary" (click)="modalService.close('downloaddocs')">OK</button>
+    </div>
+  </div>
+
+
+
+  <jw-modal id="requestmore2">
+    <div class="container">
+      <b>Request Description:</b>
+      <div class="card" style="padding:15px 15px; border:0cm 2px-solid-black;">
+        <p [innerHTML]="lclrequest"></p>
+      </div>
+      <div class="mt-4 d-flex justify-content-center ">
+        <button class="btn btn-primary" (click)="modalService.close('requestmore')">OK</button>
+      </div>
+    </div>

@@ -1,0 +1,25 @@
+
+        <div >
+          <b>Information</b>
+          <div class="card " style="background-color: aliceblue; border:none;">
+               <div (click)= "modalService.open('requestmore')" [innerHTML]="preview" style="font-size: small;"></div>
+
+  <!-- <div class="row mb-1 d-flex justify-content-center">
+    <button *ngIf="showmore" class="btn btn-sm btn-secondary" (click)="modalService.open('requestmore')">Read
+      More</button>
+  </div> -->
+
+          </div>
+        </div>
+
+ <jw-modal id="requestmore">
+  <div class="container">
+    <b>Request Description:</b>
+    <div class="card" style="padding:15px 15px; border:0cm 2px-solid-black;">
+      <p [innerHTML]="lclrequest"></p>
+    </div>
+    <div class="mt-4 d-flex justify-content-center ">
+      <button class="btn btn-primary" (click)="modalService.close('requestmore')">OK</button>
+    </div>
+  </div>
+
