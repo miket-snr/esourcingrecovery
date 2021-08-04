@@ -53,6 +53,8 @@ export class RfqControl {
   CONTACTTEL: string;
   CONTACTNAME: string;
   DELIVERYDATE: string;
+  LOCATIONNAME?: string;
+  LOCATIONGPS?: string;
   CLOSED: string;
   CLOSEDBY: string;
   VALIDITY?: string ;

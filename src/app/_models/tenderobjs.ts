@@ -50,6 +50,8 @@ export interface Tender  extends TenderReference {
    reqText?: string;
    cutoff?: string ;
    cutofftime?: string;
+   locationname?: string;
+   locationgps?: string;
    validity?: string ;
    contactEmail?: string;
    contactTel?: string;

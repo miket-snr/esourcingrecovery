@@ -127,8 +127,8 @@ public infoControl: RfqControl;
             const rfqline: RFQHeader = new RFQHeader();
             rfqline.SUBMI = tobj.SUBMI;
             rfqline.RFQNO = tobj.RFQNO;
-            rfqline.CUTOFF = tobj.CUTOFF.substring(6, 8) + '/' + tobj.CUTOFF.substring(4, 6) + '/' + tobj.CUTOFF.substring(0, 4) +
-                            '  by ' + tobj.CUTOFFTIME.substring(0, 2) + 'h' + tobj.CUTOFFTIME.substring(2, 4) ;
+            rfqline.CUTOFF = tobj.CUTOFF.substring(0, 4) + '-' + tobj.CUTOFF.substring(4, 6) + '-' + tobj.CUTOFF.substring(6, 8) +
+                            ' at ' + tobj.CUTOFFTIME.substring(0, 2) + 'h' + tobj.CUTOFFTIME.substring(2, 4) ;
             rfqline.VENDORNO = tobj.VENDORNO;
             rfqline.VENDOR = tobj.VENDOR;
             rfqline.GUID = tobj.GUID;
@@ -296,6 +296,8 @@ public infoControl: RfqControl;
     this.tender.contactEmail = controldates.CONTACTMAIL;
     this.tender.contactTel = controldates.CONTACTTEL;
     this.tender.contactName = controldates.CONTACTNAME ;
+    this.tender.locationname = controldates.LOCATIONNAME;
+    this.tender.locationgps = controldates.LOCATIONGPS;
     const responsetemp = JSON.parse(this.tenderLine.value.DATA) ;
    // tslint:disable-next-line:max-line-length
     this.tender.response = { acceptance: 'true', validity: responsetemp.VALIDITY , response: this.tenderLine.value.TAGS.replace(/\\n/g, '\n') };

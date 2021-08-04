@@ -26,6 +26,7 @@ export class RfqHeaderComponent implements OnInit, OnDestroy {
   public myFile: string;
   public chosendoclist: DMSHeader[];
   public hideheader = false;
+  public tendergps = 'https://www.google.com/maps/search/?api=1&query=';
   public tabIndex = new Array(true, false, false, false, false);
   responseform: FormGroup = this.fb.group({
     response: [null],
@@ -48,6 +49,7 @@ export class RfqHeaderComponent implements OnInit, OnDestroy {
           ['esourcing']) ;
     }
     this.tender = this.apirfqdoc.currentTender;
+    this.tendergps = 'https://www.google.com/maps/search/?api=1&query=' + this.tender.locationgps.split(';').join(',') ;
     if (this.tender.response) {
       this.responseform.setValue({
         response: this.tender.response.response ? this.tender.response.response : '',
