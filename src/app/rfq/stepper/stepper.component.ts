@@ -4,7 +4,6 @@ import { RfqAPIService } from '@app/_dataservices/rfq-api.service';
 import { Subscription } from 'rxjs';
 import { FileSaverService } from 'ngx-filesaver';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { RfqdataService } from '@app/_dataservices/rfqdata.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from '@app/_modal';
 
@@ -48,7 +47,9 @@ export class StepperComponent implements OnInit {
         this.router.navigate(
           ['esourcing']) ;
     }
-    this.tender = this.apirfqdoc.currentTender;
+    this.apirfqdoc.currentTender.subscribe(tenderdata => {
+      this.tender = tenderdata ;
+    });
     if (this.tender.response) {
       this.responseform.setValue({
         response: this.tender.response.response ? this.tender.response.response : '',

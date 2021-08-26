@@ -8,13 +8,18 @@
     </div>
     <div class="col-lg-9 col-md-4 col-sm-8">
     <div class="row">
-      <div class="col-lg-6 col-md-4 col-sm-8 ">
+      <div class="col-lg-3 col-md-8 col-sm-8 ">
         <img src="assets/images/phone.png" alt="phone">
         <a href="tel:0027126418000">+27 12 641 8000</a>
       </div>
-      <div class="col-lg-6 col-md-4 col-sm-8 ">
+
+      <div class="col-lg-3 col-md-8 col-sm-8 ">
         <img src="assets/images/email.png" alt="phone">
         <a href="mailto:info@bidvestfm.co.za">info@bidvestfm.co.za</a>
+      </div>
+      <div *ngIf="docsoutstanding" class ="col-lg-6 col-md-8 col-sm-8 ">
+        <app-notice [blinking]="'X'">
+        Click  <a href="https://google.com"> here </a> to upload Compliance Documents</app-notice>
       </div>
     </div>
     <div class="row">
@@ -33,12 +38,21 @@
                 <a class="ml-4 pl-4 py-0" style="cursor: pointer; color:slateblue;" (click)="onLogout()"
                   *ngIf="isAuthenticated()">Logout</a>
               </li>
+              <li class="nav-item py-0" [routerLinkActive]='["link-active"]' [routerLinkActiveOptions]='{ exact: true }'>
+
+                <a class="ml-4 pl-4 py-0" style="cursor: pointer; color:slateblue;" (click)="onLogin()"
+                  *ngIf="!isAuthenticated()">Login</a>
+              </li>
           </ul>
 
         </div>
       </nav>
     </div>
     </div>
+    <div class="row justify-content-centre" [hidden]="!msg">
+     <h1 style="background-color: red; color: white;">{{ msg }}</h1>
+    </div>
+
   </div>
 </div>
 </div>

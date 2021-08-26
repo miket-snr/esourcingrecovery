@@ -13,7 +13,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
  * do the job by lazy loading the module
  */
 // import { AuthModule } from './auth/auth.module';
-import { AuthService } from './auth/auth.service';
+
 import { FileSaverModule } from 'ngx-filesaver';
 import { JwtInterceptor, ErrorInterceptor } from './_helpers';
 import { HomeComponent } from './home/home.component';
@@ -25,6 +25,11 @@ import { EsourcingComponent } from './esourcing/esourcing.component';
 import { RfqComponent } from './rfq/rfq.component';
 import { StepperComponent } from './rfq/stepper/stepper.component';
 import { RfqInfoComponent } from './rfq/rfq-info/rfq-info.component';
+import { SigninComponent } from './auth/signin/signin.component';
+import { SignupComponent } from './auth/signup/signup.component';
+import { NoticeComponent } from './notice/notice.component';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,7 +41,10 @@ import { RfqInfoComponent } from './rfq/rfq-info/rfq-info.component';
     EsourcingComponent ,
     RfqComponent,
     StepperComponent,
-    RfqInfoComponent],
+    RfqInfoComponent,
+    SigninComponent,
+    SignupComponent,
+    NoticeComponent],
   imports: [
     BrowserModule,
     FormsModule,
@@ -50,7 +58,6 @@ import { RfqInfoComponent } from './rfq/rfq-info/rfq-info.component';
     // AuthModule
   ],
   providers: [
-    AuthService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
   ],

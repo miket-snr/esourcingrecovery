@@ -6,5 +6,5 @@ export const environment = {
   BASE_API2: 'https://io.bidvestfm.co.za/BIDVESTFM_API_AUTH',
   BASE_POST: 'https://io.bidvestfm.co.za/BIDVESTFM_API_GEN/genpost',
   tempuser: { username: 'tempuser',   firstName: 'temp',  lastName: 'user', role: 'all',
-  cellno: '08352251A9',  sundry: 'mike@mikeplace2.biz' }
+  cellno: '',  sundry: '', email: '' , token: '' , ucemail: '', rfqtoken: '' , userdetail: ''}
 };

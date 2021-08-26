@@ -8,11 +8,11 @@ import {
 import { Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
-import { AuthService } from '../auth/auth.service';
+import { AuthenticateService } from '@app/_dataservices/authenticate.service';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
-  constructor(private authenticationService: AuthService) {}
+  constructor(private authenticationService: AuthenticateService) {}
 
   intercept(
     request: HttpRequest<any>,
@@ -24,7 +24,7 @@ export class JwtInterceptor implements HttpInterceptor {
       if (isApiUrl) {
         request = request.clone({
           setHeaders: {
-            Authorization: `Bearer ${this.authenticationService.token}`,
+            Authorization: `Bearer 123456`,
             apikey: `${environment.apikey}`,
             'Content-Type': 'application / json',
             Accept: 'application/json'

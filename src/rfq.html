@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+        integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
+    <title>Login Page</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+    <div id="page-wrapper" class="blockcontainer blockcontainerNoPad  backpics">
+            <div class="row" id="login">
+                <div class="container py-5">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2 class="text-center text-white mb-4">You are not Logged in</h2>
+                            <div class="row">
+                                <div class="col-md-6 mx-auto">
+
+                                    <!-- form card login -->
+                                    <div class="card rounded-0">
+                                        <div class="card-header">
+                                            <h4 class="mb-0 display-6">Login Required</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <form class="form" role="form" autocomplete="off" id="formLogin"
+                                                novalidate="" method="POST">
+                                                <div class="form-group">
+                                                    <label for="uname1">Email</label>
+                                                    <input type="text" class="form-control form-control-lg rounded-0"
+                                                        name="uname1" id="uname1" ng-model="email" required="">
+                                                    <div class="invalid-feedback">Oops, you missed this one.</div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Password</label>
+                                                    <input type="password"
+                                                        class="form-control form-control-lg rounded-0" id="pwd1"
+                                                        ng-model="password" required="" autocomplete="new-password">
+                                                    <div class="invalid-feedback">Enter your password too!</div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-sm-offset-2 col-sm-4">
+
+                                                       <div > <a href = "#"  id = "register"> Register...  </a>  </div>
+                                                       <div> <a href="#" id="resetme">Forgot Password ? </a> </div>
+                                                       <div> <a href="#" id="otplogin">Login with OTP? </a> </div>
+                                                    </div>
+
+                                                </div>
+                                                <button type="submit" class="btn btn-success btn-lg float-right"
+                                                    id="btnLogin" >Login</button>
+                                            </form>
+                                        </div>
+                                        <!--/card-block-->
+                                    </div>
+                                    <!-- /form card login -->
+
+                                </div>
+
+
+                            </div>
+                            <!--/row-->
+
+                        </div>
+                        <!--/col-->
+                    </div>
+                    <!--/row-->
+                </div>
+                <!--/container-->
+            </div>
+
+         <div class="row" id="otp">
+            <div class="col-sm-6 offset-sm-3">
+                <div class="card rounded-0">
+                    <div class="card-header">
+                        <h4 class="mb-0 display-6">OTP Reset Password</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mt-4">
+                            <div class="col-sm-8 offset-sm-2">
+                                <div class="form-group">
+                                    <label for="otp">Enter OTP:</label>
+                                    <input type="password" class="form-control" ng-model="otpentered" id="otp">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-sm-8 offset-sm-2">
+
+                                <div class="form-group">
+                                    <div class="d-flex justify-content-around">
+                                        <button  class="btn btn-outline-danger cancel ">Cancel</button>
+
+                                        <button ng-click="submitotp"
+                                            class="btn btn-outline-primary">Submit</button>
+                                    </div>
+                                    <div ng-show="newpwd3" class="alert alert-danger">
+                                        {{newpwd3}}
+                                    </div>
+                                    <div ng-show="newpwd4" class="alert alert-success">
+                                        {{newpwd4}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" id="reset">
+            <div class="col-sm-6 offset-sm-3">
+                <div class="card rounded-0">
+                    <div class="card-header">
+                        <h4 class="mb-0 display-6">Password Reset</h4>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="row mt-4">
+                            <div class="col-sm-8 offset-sm-2">
+                                <div class="form-group">
+                                    <label for="usr">User Name:</label>
+                                    <input type="text" class="form-control" ng-model="commuser" id="usr">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-8 offset-sm-2">
+                                <div class="card">
+                                    <div class="card-header"> Select a Method for One Time Password</div>
+                                    <div class="card-body pt2">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="commradio" id="emailradio" value="option1" checked="checked" >
+                                            <label class="form-check-label" for="inlineRadio1">Email.. or</label>
+                                          </div>
+                                          <div class="form-check form-check-inline" >
+                                            <input class="form-check-input" type="radio" name="commradio" id="smsradio" value="option2">
+                                            <label class="form-check-label" for="inlineRadio2">SMS</label>
+                                          </div>
+
+                                    </div>
+                                    <div class="card-footer" id="commSMS" style="display:none;">
+                                        <div class="form-group">
+                                            <label for="sms">SMS No:</label>
+                                            <input type="text" class="form-control" id="smsno">
+                                        </div>
+                                        <div id="smserror" class="alert alert-danger">
+                                            Supply a Valid SMS number
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-sm-8 offset-sm-2">
+
+                                <div class="form-group">
+                                    <div class="d-flex justify-content-around">
+                                        <button  class="btn btn-outline-danger cancel ">Cancel</button>
+
+                                        <button id="resetsetup" class="btn btn-outline-primary">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" id="newpwd">
+            <div class="col-sm-6 offset-sm-3">
+                <div class="card rounded-0">
+                    <div class="card-header d-flex justify-content-around">
+                        <h4 class="mb-0 ">Set New Password</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mt-4">
+                            <div class="col-sm-8 offset-sm-2">
+                                <div class="form-group">
+                                    <label for="newpwd">New Password:</label>
+                                    <input type="password" class="form-control" id="newpwdin">
+
+                                </div>
+                                <div id="newpwdlength" class="alert alert-danger">
+                                    Password must be at least 6 chars
+                                </div>
+                                <div class="form-group">
+                                    <label for="reppwd">Repeat Password:</label>
+                                    <input type="password" class="form-control" id="reppwd">
+
+                                </div>
+                                <div id="newpwdequal" class="alert alert-danger">
+                                    Passwords must be Equal
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-5">
+                            <div class="col-sm-8 offset-sm-2">
+
+                                <div class="d-flex justify-content-around">
+                                    <button id="cancelbtn" class="btn btn-outline-danger cancel ">Cancel</button>
+
+                                    <button id="btns" class="btn btn-outline-primary">Submit</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" id="signup">
+            <div class="col-sm-6 offset-sm-3">
+                <div class="card rounded-0">
+                    <div class="card-header d-flex justify-content-around">
+                        <h4 class="mb-0 ">Sign up</h4>
+                    </div>
+                    <div class="card-body">
+                          <div class="signup-form">
+                            <form action="/examples/actions/confirmation.php"  id="registerform">
+                                <h2>Register</h2>
+                                <p class="hint-text">Create your account. It's free and only takes a minute.</p>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col"><input type="text" class="form-control" name="first_name" placeholder="First Name" required="required"></div>
+                                        <div class="col"><input type="text" class="form-control" name="last_name" placeholder="Last Name" required="required"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="email" class="form-control" name="email" placeholder="Email" required="required">
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" class="form-control" name="password" placeholder="Password" required="required">
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" class="form-control" name="confirm_password" placeholder="Confirm Password" required="required">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-check-label"><input type="checkbox" required="required"> I accept the <a href="#">Terms of Use</a> &amp; <a href="#">Privacy Policy</a></label>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-success btn-lg btn-block">Register Now</button>
+                                </div>
+                            </form>
+                            <div class="text-center cancel">Already have an account? <a href="#">Sign in</a></div>
+                        <div class="row mt-5">
+                            <div class="col-sm-8 offset-sm-2">
+
+                                <div class="d-flex justify-content-around">
+                                    <button id="cancelbtn" class="btn btn-outline-danger cancel ">Cancel</button>
+
+                                    <button id="btns" class="btn btn-outline-primary">Submit</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+      Test
+      <div class="row"  id ="lgotp">
+        <div class="col-sm-6 offset-sm-3">
+            <div class="card rounded-0">
+                <div class="card-header">
+                    <h4 class="mb-0 display-6">OTP Login</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mt-4">
+                        <div class="col-sm-8 offset-sm-2">
+                            <div class="form-group">
+                                <label for="otp">Enter OTP:</label>
+                                <input type="password" class="form-control" ng-model="otpentered" id="otp">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-sm-8 offset-sm-2">
+
+                            <div class="form-group">
+                                <div class="d-flex justify-content-around">
+                                    <button  class="btn btn-outline-danger cancel ">Cancel</button>
+
+                                    <button ng-click="submitotp"
+                                        class="btn btn-outline-primary">Submit</button>
+                                </div>
+                                <div ng-show="newpwd3" class="alert alert-danger">
+                                    {{newpwd3}}
+                                </div>
+                                <div ng-show="newpwd4" class="alert alert-success">
+                                    {{newpwd4}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="loginapp.js"></script>
+
+</body>
+
+</html>
+
+
+
+

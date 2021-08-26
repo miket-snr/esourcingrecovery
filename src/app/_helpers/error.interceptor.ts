@@ -8,11 +8,11 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-import { AuthService } from '../auth/auth.service';
+import { AuthenticateService } from '@app/_dataservices/authenticate.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-  constructor(private authenticationService: AuthService) {}
+  constructor(private authenticationService: AuthenticateService) {}
 
   intercept(
     request: HttpRequest<any>,

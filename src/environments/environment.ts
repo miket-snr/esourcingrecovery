@@ -10,7 +10,8 @@ export const environment = {
   BASE_API2: 'https://io.bidvestfm.co.za/BIDVESTFM_API_AUTH',
   BASE_POST: 'https://io.bidvestfm.co.za/BIDVESTFM_API_GEN/genpost',
   tempuser: { username: 'tempuser',   firstName: 'temp',  lastName: 'user', role: 'all',
-  cellno: '0835225169',  sundry: 'mike@mikethomson.biz' }
+  cellno: '',  sundry: '', email: '' , token: '' , ucemail: '', rfqtoken: '' , userdetail: ''}
+
 };
 
 /*

@@ -1,47 +1,113 @@
 <!-- ******************************************************************* -->
 <div *ngIf="lclRFQItem" class="card mt-2 mb-20">
   <div class="row">
-    <div class="col-md-6 offset-md-6 col-lg-4 offset-lg-3 col-sm-10 offset-sm-1">
-      <div class="card" style="background-color:lightsteelblue;">
+    <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3 col-sm-10 offset-sm-1">
+      <div class="card" style="background-color:#d3e1f3;">
         <div class="card-body">
-          <b>Requirement: </b><p>
-            {{lclRFQItemCopy.QUANTITY}} of  {{lclRFQItemCopy.MTEXT}}
-          </p>
+          <!-- <table class="table table-sm">
+           <tr>
+           <th>Quantity</th>
+           <th>UoM</th>
+           <th>Description</th>
+           </tr>
+           <tr>
+             <td>{{lclRFQItemCopy.QUANTITY}}</td>
+             <td>{{lclRFQItemCopy.UOM}}</td>
+             <td> {{lclRFQItemCopy.MTEXT}}</td>
+           </tr>
+           <tr>
+            <td>{{lclRFQItemCopy.QUANTITY}}</td>
+            <td>{{lclRFQItemCopy.UOM}}</td>
+            <td> {{lclRFQItemCopy.MTEXT}}</td>
+          </tr>
+         </table> -->
+          <div class="row mb-3" style="border-bottom: 1px solid grey; ">
+            <div class="col-10">
+              <b> {{lclRFQItemCopy.QUANTITY}} {{lclRFQItemCopy.UOM}} {{lclRFQItemCopy.MTEXT}}</b>
+            </div>
+            <div class="col-2">
+              <button type="button" class="btn btn-sm btn-danger" (click)="onReject()">Reject Item</button>
+            </div>
+          </div>
           <div [hidden]="submitted">
 
             <form (ngSubmit)="onSubmit()" [formGroup]="itemForm">
-              <div class="form-group">
-                <label for="price">Total Price - ZAR (Excl VAT)</label>
-                <input type="text" class="form-control" id="price" required formControlName="bidprice"
-                   placeholder="Total Price in ZAR excl VAT">
-              </div>
-              <div class="form-group">
-                <label for="deldate">Lead Time Required</label>
-                <select class="form-control" id="deldate" required  formControlName="leadtime" name="leadtime"
-                  >
-                  <option *ngFor="let vam of vams" [value]="vam">{{vam}}</option>
-                </select>
+              <div class="row">
+                <div class="col-4 text-right small">
+                  Quantity</div>
+                <div class="col-2" > <input type="text" class="form-control"
+                  [ngClass]="{'alert-danger':f.quantity.errors && f.quantity.errors.required}"
+                  id="quantity" required
+                    formControlName="quantity"
+                    placeholder="Quantity *"
+                    (change)="calcLine()"/>
+                    </div>
 
-              </div>
-
-
-              <div class="form-group">
-                <label for="vam">Price Valid for</label>
-                <select class="form-control" id="vam" required  formControlName="validity" >
-                  <option *ngFor="let vam of vams" [value]="vam">{{vam}}</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="conditionals">Assumptions and Special Conditions</label>
-                <textarea class="form-control" id="conditionals" placeholder ="Special conditions must be stated here"  formControlName="assumption"></textarea>
-
+                    <div class="col-4"> <input type="text" class="form-control"
+                      [ngClass]="{'alert-danger':f.uom.errors && f.uom.errors.required}"
+                      id="uom" required
+                      formControlName="uom" placeholder="UoM *"/>
+                      </div>
               </div>
 
-              <div class="d-flex justify-content-around">
+              <div class="row mt-2">
+                <div class="col-4 text-right small">
+                  Unit Price (Excl VAT)</div>
+                <div class="col-2 ">
+                   <input type="text" class="form-control" id="price" required
+                   [ngClass]="{'alert-danger':f.bidprice.errors && f.bidprice.errors.required}"
+                    formControlName="bidprice"
+                    placeholder="Unit Price *"
+                    (change)="calcLine()"/>
+                    </div>
+              </div>
+
+              <div class="row mt-2">
+                <div class="col-4 text-right small" >
+                 Total Line Price (Excl VAT)</div>
+                <div class="col-2 "> <input type="text" [readOnly]=true  class="form-control" id="lineprice" required
+                    formControlName="lineprice" placeholder="Line Price in ZAR excl VAT"></div>
+                    <div class="col-4" style="color:darkblue;">
+                      <small>This is Quantity * Unit Price - Please confirm</small>
+                    </div>
+              </div>
+
+              <div class="row mt-2">
+                <div class="col-4 text-right small">Lead Time (in Days)</div>
+                <div class="col-7">
+                  <input type="text" id="deldate"
+                  class="form-control" placeholder="Lead time in days *"
+                  [ngClass]="{'alert-danger':f.leadtime.errors && f.leadtime.errors.required}"
+                  required formControlName="leadtime"
+                  name="leadtime" />
+                </div>
+              </div>
+
+              <div class="row mt-2">
+                <div class="col-4 text-right small">
+                  Price Valid for (days) </div>
+                <div class="col-7">
+                  <select class="form-control"
+                  id="vam" required
+                  formControlName="validity">
+                    <option *ngFor="let vam of vams" [value]="vam">{{vam}}</option>
+                  </select>
+                 </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col-4 text-right small ">Assumptions and Special Conditions</div>
+                <div class="col-7">
+                  <textarea class="form-control" id="conditionals" placeholder="Special conditions must be stated here"
+                    formControlName="assumption"></textarea>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-around mt-3">
                 <button type="submit" class="btn btn-success" [disabled]="!itemForm.valid">OK</button>
                 <button type="button" class="btn btn-primary" (click)=" resetModal()">Reset</button>
                 <a class="btn btn-outline-danger" (click)="itemForm.reset();resetModal();closeModal()">Cancel</a>
               </div>
+
             </form>
           </div>
         </div>

@@ -2,34 +2,38 @@
 import { first } from 'rxjs/operators';
 
 import { User } from '@app/_models';
-import { AuthService } from '../auth/auth.service';
-import { RfqAPIService } from '@app/_dataservices/rfq-api.service';
+
 import { Subscription } from 'rxjs';
 import { listLazyRoutes } from '@angular/compiler/src/aot/lazy_routes';
+import { AuthenticateService } from '@app/_dataservices/authenticate.service';
 
-@Component({ templateUrl: 'home.component.html' })
+@Component({ templateUrl: 'home.component.html',
+styleUrls: ['./homecomponent.css']})
 export class HomeComponent {
-  public user: User;
+  user = new User();
   public subscriber: Subscription;
   public chosenlist = [];
-  public orchlist = { show: 'baselist' };
-  constructor(private authservice: AuthService, public rfqapis: RfqAPIService) {
-    this.rfqapis.getRfqList(this.rfqapis.currentUser.username);
-    this.orchlist = this.rfqapis.orchlist;
+
+  constructor(private authservice: AuthenticateService) {
+
   }
 
   // tslint:disable-next-line:use-lifecycle-interface
   ngOnInit() {
-    // If rfqtoken ne 1234567 - check for validity - return username, rfqdetail else go to login
-    // else if user ne 'tempuser'
-    // check for listLazyRoutes
-    // else  go to login
-    this.user = this.authservice.currentUserValue;
-    this.authservice.checksignon();
+    this.authservice.currentUser.subscribe({
+      next: userx => {
+        if (userx) {
+          this.user = {...userx};
+        } else {
+          this.user.username = 'Guest';
+        }
+      },
+      error: err => console.error('something wrong occurred: ' + err),
+      complete: () => console.log('done')
+    });
+   // this.authservice.checksignon();
   }
-  chooselist(item) {
-    this.rfqapis.getRfqItems(item.RFQNO);
-    this.rfqapis.currentRFQDoc.next(item);
-    this.rfqapis.orchlist.show = 'header';
+  chooselist() {
+alert(this.user.username);
   }
 }

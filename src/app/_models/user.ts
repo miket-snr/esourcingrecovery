@@ -2,14 +2,14 @@
   username: string;
   firstName: string;
   lastName: string;
-  role: string;
+  role?: string;
   cellno: string;
   sundry: string;
-  email: string;
+  email?: string;
   token: string;
-  ucemail: string;
+  ucemail?: string;
   rfqtoken: string;
-  userdetail: string;
+  userdetail?: string;
 }
 
 export class Vendor {

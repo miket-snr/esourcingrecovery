@@ -6,28 +6,30 @@
         <table class="table table-bordered table-responsive-md table-striped text-center">
           <thead>
             <tr>
+              <th class="text-center">Edit</th>
               <th class="text-center">Item No</th>
               <th class="text-center">Text</th>
               <th class="text-center">Qty</th>
               <th class="text-center">Unit</th>
               <th class="text-center">Quoted</th>
-              <th class="text-center">Edit</th>
+
             </tr>
           </thead>
           <tbody>
 
             <tr *ngFor="let item of rfqItems ">
-              <td class="pt-1" >{{ item.ITEMNO}}</td>
-              <td class="pt-1" style="font-size:small;" >{{ item.MTEXT}}</td>
-              <td class="pt-1" >{{ item.QUANTITY }}</td>
-              <td class="pt-1">{{ item.UOM}}</td>
-              <td class="pt-1" >{{ item.BIDPRICE | currency: ' ' }}</td>
               <td class="pt-1">
                 <span *ngIf="checkval(item)"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0"
                     (click)="open(item)">Quote</button></span>
                     <span *ngIf="!checkval(item)"><button type="button" class="btn btn-success btn-rounded btn-sm my-0"
                       (click)="open(item)">Edit</button></span>
               </td>
+              <td class="pt-1" ><small>{{ item.ITEMNO}}</small></td>
+              <td class="pt-1" style="font-size:small;" >{{ item.MTEXT}}</td>
+              <td class="pt-1" ><small>{{ item.QUANTITY }}</small></td>
+              <td class="pt-1"><small>{{ item.UOM}}</small></td>
+              <td class="pt-1" ><small>{{ item.BIDPRICE | currency: ' ' }}</small></td>
+
             </tr>
         </tbody>
         </table>

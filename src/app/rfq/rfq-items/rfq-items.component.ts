@@ -1,16 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { RFQItem, TenderItem, Vendor } from '@app/_models';
+import { RFQItem, Tender, TenderItem, Vendor } from '@app/_models';
 import { RfqAPIService } from '@app/_dataservices/rfq-api.service';
 import { Subscription } from 'rxjs';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ModalModule, ModalService } from '@app/_modal';
+import { Router } from '@angular/router';
 
 /**
  *
  *
- * @export
- * @class RfqItemsComponent
- * @implements {OnInit}
  */
 @Component({
   selector: 'app-rfq-items',
@@ -29,18 +27,27 @@ export class RfqItemsComponent implements OnInit {
   subscriber: Subscription;
   closeResult: string;
   item: RFQItem;
+  currentTender: Tender ;
   constructor(
     public rfqapi: RfqAPIService,
-    public modalService: ModalService
+    public modalService: ModalService,
+    private router: Router
   ) {}
 
   ngOnInit() {
+    this.rfqapi.currentTender.subscribe(data => {
+      this.currentTender = data;
+    });
     this.rfqItems = [];
     const pagesize = this.pagesize;
-    this.countofitems = this.rfqapi.tender.tenderItems.length;
+    if ( this.currentTender && this.currentTender.tenderItems) {
+    this.countofitems = this.currentTender.tenderItems.length;
+    } else {
+      this.router.navigate(['/']);
+    }
     this.paging = this.pagesize < this.countofitems ;
     for (let i = 0; i < this.pagesize && i < this.countofitems  ; i++) {
-      this.rfqItems.push( this.rfqapi.tender.tenderItems[i]);
+      this.rfqItems.push( this.currentTender.tenderItems[i]);
       if (i === this.countofitems ) {
         i = this.pagesize;
       }
@@ -51,12 +58,15 @@ export class RfqItemsComponent implements OnInit {
        const mypage = {index: i + 1, min: i * pagesize , max: i * pagesize + pagesize - 1 };
        this.pageframes.push(mypage);
       }
-    this.dirty = this.rfqapi.tender.tenderItems.reduce( ( a, b) =>
+    this.dirty = this.currentTender.tenderItems.reduce( ( a, b) =>
        a.BIDPRICE < b.BIDPRICE ? a : b  );
     this.rfqapi.openitems = this.dirty.BIDPRICE ;
   }
   // tslint:disable-next-line: use-lifecycle-interface
   ngOnDestroy() {
+
+  }
+  easyEdit() {
 
   }
   checkval(item) {
@@ -72,8 +82,8 @@ export class RfqItemsComponent implements OnInit {
     const cursor = (this.currentpage - 1) * this.pagesize ;
     for (let i = cursor; i < cursor + this.pagesize; i++) {
 
-      this.rfqItems.push( this.rfqapi.tender.tenderItems[i]);
-      if (i ===  (this.rfqapi.tender.tenderItems.length - 1 )) {
+      this.rfqItems.push( this.currentTender.tenderItems[i]);
+      if (i ===  (this.currentTender.tenderItems.length - 1 )) {
         i = cursor + this.pagesize;
       }
     }
@@ -89,7 +99,7 @@ export class RfqItemsComponent implements OnInit {
   closeModal(item: TenderItem) {
     const lclarray = [];
     if (item) {
-      for (const itemin of this.rfqapi.tender.tenderItems) {
+      for (const itemin of this.currentTender.tenderItems) {
         if (itemin.ITEMNO === item.ITEMNO) {
           lclarray.push(item);
         } else {
@@ -97,7 +107,8 @@ export class RfqItemsComponent implements OnInit {
         }
       }
       this.rfqapi.postPricing(item) ;
-      this.rfqapi.tender.tenderItems = [...lclarray];
+      this.currentTender.tenderItems = [...lclarray];
+      this.rfqapi.tender.next(this.currentTender);
       this.pager(this.currentpage);
       this.dirty = lclarray.reduce( ( a, b) =>
        a.BIDPRICE < b.BIDPRICE ? a : b  );

@@ -1,15 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthenticateService } from '@app/_dataservices/authenticate.service';
 import { Subscription } from 'rxjs';
-import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-signin',
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.css']
 })
-export class SigninComponent implements OnInit {
+export class SigninComponent implements OnInit, OnDestroy {
   public usesignin = 'reset';
   public commethod = 'SMS';
   public username = '';
@@ -20,7 +20,7 @@ export class SigninComponent implements OnInit {
   public otpin = '';
   public password = '';
   private messagesubscription: Subscription;
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(private authService: AuthenticateService, private router: Router) {
     this.username = this.authService.currentUserValue
       ? this.authService.currentUserValue.username
       : '';
@@ -71,12 +71,24 @@ export class SigninComponent implements OnInit {
   /* ************************************************************* */
   onOTPSend() {
     this.authService
-      .confirmOTP(this.username, this.otpin, this.temptoken);
+      .confirmOTP(this.username, this.otpin, this.temptoken).subscribe( data => {
+        if (data.length > 6) {
+          this.authService.sendMessage(data) ;
+        } else {
+          this.router.navigate(['esourcing']) ;
+        }
+      });
   }
   /* ************************************************************* */
   onOTPSinSend() {
     this.authService
-      .confirmOTP(this.username, this.otpin, this.temptoken) ;
+      .confirmOTP(this.username, this.otpin, this.temptoken).subscribe( data => {
+        if (data.length > 6) {
+          this.authService.sendMessage(data) ;
+        }  else {
+          this.router.navigate(['esourcing']) ;
+        }
+      });
   }
 
   /* ************************************************************* */

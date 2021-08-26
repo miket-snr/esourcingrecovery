@@ -1,11 +1,9 @@
 import { Component, OnInit, OnDestroy, Output } from '@angular/core';
 import { RFQHeader, DMSHeader, RfqControl, Tender } from '@app/_models';
 import { RfqAPIService } from '@app/_dataservices/rfq-api.service';
-import { Subscription } from 'rxjs';
 import { FileSaverService } from 'ngx-filesaver';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { RfqdataService } from '@app/_dataservices/rfqdata.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ModalService } from '@app/_modal';
 
 @Component({
@@ -16,13 +14,17 @@ import { ModalService } from '@app/_modal';
 export class RfqHeaderComponent implements OnInit, OnDestroy {
   public docsload = 'UP';
   public docsdirection = 'Show Docs for Download';
+  public panelname = 'info';
   public tender: Tender;
   public lclrfqdoc: RFQHeader;
   public biddoclist = [];
   public rfqControl: RfqControl;
   public lclrequest = '';
+  public lclReqtext = '';
   public preview = '';
   public showmore = true;
+  public rejectionText = '';
+  public rejectionOnce = '';
   public myFile: string;
   public chosendoclist: DMSHeader[];
   public hideheader = false;
@@ -45,32 +47,52 @@ export class RfqHeaderComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (!this.apirfqdoc.currentTender) {
-        this.router.navigate(
-          ['esourcing']) ;
+      this.router.navigate(
+        ['esourcing']);
     }
-    this.tender = this.apirfqdoc.currentTender;
-    this.tendergps = 'https://www.google.com/maps/search/?api=1&query=' + this.tender.locationgps.split(';').join(',') ;
-    if (this.tender.response) {
-      this.responseform.setValue({
-        response: this.tender.response.response ? this.tender.response.response : '',
-        validity: this.tender.response.validity ? this.tender.response.validity : ''
-            });
-      // this.lclrfqdoc = this.tender.rfqNo;
-  }
-    const requestarray  = this.tender.reqText.replace('\\n', '').split('\\n');
+    this.apirfqdoc.currentTender.subscribe(tenderdata => {
+      if (tenderdata) {
+        this.tender = tenderdata;
+      }
+    });
+    if (this.tender) {
+      this.tendergps = 'https://www.google.com/maps/search/?api=1&query=' + this.tender.locationgps.split(';').join(',');
 
-    if ( requestarray.length > 2) {
+      if (this.tender.response) {
+        this.responseform.setValue({
+          response: this.tender.response.response ? this.tender.response.response : '',
+          validity: this.tender.response.validity ? this.tender.response.validity : ''
+        });
+        // this.lclrfqdoc = this.tender.rfqNo;
+      }
+      this.lclReqtext = this.tender.reqText;
+      const requestarray = this.tender.reqText.replace('\\n', '').split('\\n');
+
+      if (requestarray.length > 2) {
         this.preview = requestarray[0] + '<br />' + requestarray[1] + '.......<b>Read More</b>';
       } else {
         this.preview = requestarray.join('<br />');
         this.showmore = false;
       }
-    this.lclrequest = requestarray.join('<br />');
-    this.apirfqdoc.biddoclist.asObservable().subscribe( items => {
-      this.biddoclist = items ;
-    });
+      this.lclrequest = requestarray.join('<br />');
     }
+    this.apirfqdoc.biddoclist.asObservable().subscribe(items => {
+      this.biddoclist = items;
+    });
+  }
+  showPanel( panelname = 'info') {
+    this.panelname = panelname;
+  }
+  reject() {
+    const textout = (this.rejectionOnce) ? this.rejectionText + '- We want to Quote in Future' :
+      this.rejectionText + '- We DO NOT want to Quote in Future';
+    this.apirfqdoc.postRejection(textout).subscribe(response => {
+      this.modalService.close('rejection');
+      alert(response);
+      this.router.navigate(['/']);
+    });
 
+  }
   // tslint:disable-next-line:use-lifecycle-interface
   ngOnDestroy() {
 
@@ -88,18 +110,18 @@ export class RfqHeaderComponent implements OnInit, OnDestroy {
   }
   public sendresponse(response) {
     // this.apirfqdoc.tenderLine.TAGS = this.responseform.get('response').value;
-    this.apirfqdoc.postResponse(this.responseform.get('response').value).subscribe( data => {
-      this.apirfqdoc.postValidity(this.responseform.get('validity').value).subscribe( data2 => {
-     const x = data2 ;
-     if (response === 'commit') {
-      this.apirfqdoc.postCommit('commit').subscribe( data3 => {
-        const x3 = false;
-        this.router.navigate(['/']);
-          }) ;
-      } else {
-        alert('Changes saved');
-      }
-    });
+    this.apirfqdoc.postResponse(this.responseform.get('response').value).subscribe(data => {
+      this.apirfqdoc.postValidity(this.responseform.get('validity').value).subscribe(data2 => {
+        const x = data2;
+        if (response === 'commit') {
+          this.apirfqdoc.postCommit('commit').subscribe(data3 => {
+            const x3 = false;
+            this.router.navigate(['/']);
+          });
+        } else {
+          alert('Changes saved');
+        }
+      });
     });
 
   }
@@ -113,7 +135,7 @@ export class RfqHeaderComponent implements OnInit, OnDestroy {
     // this..chars = '';
     reader.onloadend = e => {
       const dataURL = reader.result;
-      const biddocs = this.apirfqdoc.tenderdoclist.value ;
+      const biddocs = this.apirfqdoc.tenderdoclist.value;
       //   const contenttype = reader.result.split(',')[0];
       //   /*
       //  //dataService.createDMSDoc(im_content).then(
@@ -124,20 +146,23 @@ export class RfqHeaderComponent implements OnInit, OnDestroy {
       const vendor = this.tender.guid;
       this.apirfqdoc.uploadQuoteFile2SAP(files, dataURL, docno, vendor);
       biddocs.push(
-      { MANDT: '',
-      APIKEY: '',
-      DOCNO: '',
-      PARTNER: '',
-      COUNTER: '',
-      CONTENT: '',
-      DATELOADED: '',
-      LOADEDBY: '',
-      IMPORTED: '',
-      ORIGINALNAME: this.myFile,
-      FILESIZE: '',
-      MIMETYPE: '',
-      CHARSHOLDER: '' });
-      this.apirfqdoc.tenderdoclist.next(biddocs) ;//     .then(function() {
+        {
+          MANDT: '',
+          APIKEY: '',
+          DOCNO: '',
+          PARTNER: '',
+          COUNTER: '',
+          CONTENT: '',
+          DATELOADED: '',
+          LOADEDBY: '',
+          IMPORTED: '',
+          ORIGINALNAME: this.myFile,
+          FILESIZE: '',
+          MIMETYPE: '',
+          CHARSHOLDER: ''
+        });
+      this.apirfqdoc.tenderdoclist.next(biddocs);
+      //     .then(function() {
       //       $location.path('/tenders');
       //     });
       //   //  }) ;

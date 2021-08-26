@@ -1,15 +1,16 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForm, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthenticateService } from '@app/_dataservices/authenticate.service';
 import { Subscription } from 'rxjs';
-import { AuthService } from '../auth.service';
-import { MustMatch } from '../must-match.validator';
+// import { AuthService } from '../auth.service';
+// import { MustMatch } from '../must-match.validator';
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css']
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent implements OnInit, OnDestroy {
   private messagesubscription: Subscription;
   public messagetxt = '';
   public success = false;
@@ -19,7 +20,7 @@ export class SignupComponent implements OnInit {
   submitted = false;
 
   constructor(
-    private authService: AuthService,
+    private authService: AuthenticateService,
     private formBuilder: FormBuilder
   ) {
     this.messagesubscription = this.authService.getMessage().subscribe(x => {

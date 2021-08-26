@@ -1,21 +1,24 @@
 <div class="container" style="background-color:white; padding-top:5px">
+
   <div class=" row d-flex justify-content-center">
-    <div id="pageout">
-      <div class="row">
+    <div id="Page0">
+      <div class="row" id="header">
 
         <!-- Page Heading -->
-        <div class="card-columns">
+        <div class="col-4">
           <div class="card  border-0">
             <div class="card-body">
               <a href="#/" title="Home"><img src="assets/images/logo2small.png" /></a>
             </div>
           </div>
-          <div class="card  border-0 p-3">
+          </div>
+          <div class="col-8">
+          <div class="card  border-0 pl-3">
             <div class="card-body">
-              <h4>Request for Quotation</h4>
-              <h5>Reference number: {{chosenrfq.RFQNO}}</h5>
-              <h5>Vendor: {{chosenrfq.VENDOR}}</h5>
-              <h4>Deadline:{{chosenrfq.CUTOFF}}</h4>
+              <h5>Request for Quotation</h5>
+              <h6>Reference number: {{chosenrfq.refNo}}</h6>
+              <h6>Vendor: {{chosenrfq.vendor}}</h6>
+              <h6>Deadline:{{chosenrfq.cutoff}}</h6>
             </div>
           </div>
 
@@ -36,20 +39,26 @@
                   <th>Text</th>
                   <th>Qty</th>
                   <th>Unit</th>
-                  <th>Delivery Date</th>
+                  <th>Lead Time</th>
                   <th>Quoted Price</th>
 
                 </tr>
 
-                <tr *ngFor="let item of rfqItems">
+                <tr *ngFor="let item of rfqItems[0]">
 
                   <td>{{item.ITEMNO}}</td>
                   <td>{{item.MATERIAL}}</td>
                   <td>{{item.MTEXT}}</td>
                   <td>{{item.QUANTITY}}</td>
-                  <td>{{item.UNIT}}</td>
-                  <td>{{item.DELIVERYDATE}}</td>
-                  <td>{{item.PRICE}}</td>
+                  <td>{{item.UOM}}</td>
+                  <td>{{item.LEADTIME}}</td>
+                  <td>{{item.BIDPRICE}}</td>
+                  <!-- <td class="pt-1">
+                    <span *ngIf="checkval(item)"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0"
+                        (click)="openItem(item)">Bid</button></span>
+                        <span *ngIf="!checkval(item)"><button type="button" class="btn btn-success btn-rounded btn-sm my-0"
+                          (click)="openItem(item)">Edit</button></span>
+                  </td> -->
                 </tr>
               </table>
             </div>
@@ -58,15 +67,92 @@
       </div>
     </div>
   </div>
-  <div class="row">
+  <!-- <div *ngIf=" rfqItems[1]" class="row d-flex justify-content-center">
+    <div id="Page1">
+      <table class="table table-responsive table-striped w-100 d-block d-md-table">
+        <tr>
 
-    <div class="col-6">
-      <a class="btn btn-outline-primary" (click)="captureScreen()">Save as Pdf</a>
+          <th>Item</th>
+          <th>Material</th>
+          <th>Text</th>
+          <th>Qty</th>
+          <th>Unit</th>
+          <th>Lead Time</th>
+          <th>Quoted Price</th>
+
+        </tr>
+
+        <tr *ngFor="let item of rfqItems[1]">
+
+          <td>{{item.ITEMNO}}</td>
+          <td>{{item.MATERIAL}}</td>
+          <td>{{item.MTEXT}}</td>
+          <td>{{item.QUANTITY}}</td>
+          <td>{{item.UOM}}</td>
+          <td>{{item.LEADTIME}}</td>
+          <td>{{item.BIDPRICE}}</td>
+        </tr>
+      </table>
     </div>
-    <div class="col-6">
-      <a class="btn btn-outline-danger" href="#/tenders">Cancel</a>
+  </div>
+  <div *ngIf=" rfqItems[2]" class=" row  d-flex justify-content-center">
+    <div id="Page2">
+      <table class="table table-responsive table-striped w-100 d-block d-md-table">
+        <tr>
+
+          <th>Item</th>
+          <th>Material</th>
+          <th>Text</th>
+          <th>Qty</th>
+          <th>Unit</th>
+          <th>Lead Time</th>
+          <th>Quoted Price</th>
+
+        </tr>
+
+        <tr *ngFor="let item of rfqItems[2]">
+
+          <td>{{item.ITEMNO}}</td>
+          <td>{{item.MATERIAL}}</td>
+          <td>{{item.MTEXT}}</td>
+          <td>{{item.QUANTITY}}</td>
+          <td>{{item.UOM}}</td>
+          <td>{{item.LEADTIME}}</td>
+          <td>{{item.BIDPRICE}}</td>
+        </tr>
+      </table>
     </div>
+  </div>
+ -->
+
+  <div class="row d-flex justify-content-around">
+
+      <a class="btn btn-sm "  style="background-color:blue; color: white; font-size: 1rem;" (click)="captureScreen(1)">Save as Pdf</a>
+
+      <a class="btn btn-sm "  style="background-color:blue; color: white; font-size: 1rem;" (click)="exportCSV()">Export as CSV File</a>
+
+      <!-- <div >
+        <label for="file-upload" class="custom-file-upload">
+          <i class="fa fa-cloud-upload"></i> Import Excel or csv
+        </label>
+        <input type="file" id="file-upload" (change)="addFile($event)">
+      </div> -->
+      <!-- <a class="btn btn-outline-primary" (click)="importExcel($event.target.files)" >Import Excel File</a> -->
+
+      <!-- <a class="btn btn-sm btn-success" style="color: white; font-size: 1rem;" (click)="captureScreen(2)">Save as Final</a> -->
+
+      <a class="btn btn-sm btn-danger" style="font-size: 1rem;" href="#/tenders">Cancel</a>
 
   </div>
+  <div class="row mt-3 justify-content-center">
+  <div class="col-md-8 form-group">
+    <input type="file" class="form-control" (change)="addFile($event)"
+    placeholder="Upload file" accept=".csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+  </div>
+</div>
   <br>
 </div>
+
+<jw-modal id="itemeditpdf">
+  <app-rfq-item-detail (closer)="closeModal($event)"></app-rfq-item-detail>
+</jw-modal>
