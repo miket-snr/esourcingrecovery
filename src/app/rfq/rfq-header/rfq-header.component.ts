@@ -14,7 +14,7 @@ import { ModalService } from '@app/_modal';
 export class RfqHeaderComponent implements OnInit, OnDestroy {
   public docsload = 'UP';
   public docsdirection = 'Show Docs for Download';
-  public panelname = 'info';
+  public panelname = 'quote';
   public tender: Tender;
   public lclrfqdoc: RFQHeader;
   public biddoclist = [];
@@ -28,6 +28,8 @@ export class RfqHeaderComponent implements OnInit, OnDestroy {
   public myFile: string;
   public chosendoclist: DMSHeader[];
   public hideheader = false;
+  public headerText = 'Request for Quotation';
+  public docsoutstanding = '';
   public tendergps = 'https://www.google.com/maps/search/?api=1&query=';
   public tabIndex = new Array(true, false, false, false, false);
   responseform: FormGroup = this.fb.group({
@@ -50,11 +52,18 @@ export class RfqHeaderComponent implements OnInit, OnDestroy {
       this.router.navigate(
         ['esourcing']);
     }
+    this.apirfqdoc.docsoutstanding.subscribe((doc) => {
+      this.docsoutstanding = doc ;
+   });
     this.apirfqdoc.currentTender.subscribe(tenderdata => {
       if (tenderdata) {
         this.tender = tenderdata;
       }
     });
+    this.apirfqdoc.headerTextOB.subscribe( (txt) => {
+      this.headerText = txt;
+    });
+
     if (this.tender) {
       this.tendergps = 'https://www.google.com/maps/search/?api=1&query=' + this.tender.locationgps.split(';').join(',');
 
@@ -80,7 +89,7 @@ export class RfqHeaderComponent implements OnInit, OnDestroy {
       this.biddoclist = items;
     });
   }
-  showPanel( panelname = 'info') {
+  showPanel( panelname = 'quote') {
     this.panelname = panelname;
   }
   reject() {

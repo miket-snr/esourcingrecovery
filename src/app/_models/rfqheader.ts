@@ -52,6 +52,9 @@ export class RfqControl {
   CONTACTMAIL: string;
   CONTACTTEL: string;
   CONTACTNAME: string;
+  ALTCONTACTMAIL: string;
+  ALTCONTACTTEL: string;
+  ALTCONTACTNAME: string;
   DELIVERYDATE: string;
   LOCATIONNAME?: string;
   LOCATIONGPS?: string;

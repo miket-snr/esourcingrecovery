@@ -15,6 +15,7 @@ export class EsourcingComponent implements OnInit {
   public user: User;
   public subscriber: Subscription;
   public chosenlist = [];
+  public standardText = [' '] ;
 
   constructor(private authservice: AuthenticateService,
               public rfqapis: RfqAPIService,
@@ -40,6 +41,9 @@ export class EsourcingComponent implements OnInit {
        this.user.username  &&  (this.user.username.indexOf('@') > 2)) {
       this.rfqapis.getRfqList(this.user.username);
     }
+    this.rfqapis.standardTextOB.subscribe(data => {
+      this.standardText = data ;
+    });
   }
   chooselist(item) {
     this.rfqapis.selectedRFQ.next(item);

@@ -17,12 +17,30 @@ input[type="file"] {
 .alert-success {
   font-weight:bolder;
   font-style: italic;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.nav-tabs .nav-item {
+  transform: skew(-22.5deg);
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, .2);
+}
+
+li.nav-item:first-child::before {
+  content: '';
+  height: 40px;
+  background: #fff;
+  width: 20px;
+  position: absolute;
+  transform: skew(22.5deg);
+  top: 1px;
+  left: -8px;
+}
+
+.nav-tabs .nav-item a span {
+  transform: skew(22.5deg);
+  display: inline-block;
 }
 
 .nav-item > .active {
-   background-color: rgb(118, 243, 243);
-   color: white;
-}
-.nav-item > :hover {
-  color: blue;
+  background-color: whitesmoke;
 }

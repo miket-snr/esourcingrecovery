@@ -1,56 +1,84 @@
-<div class="mt-3">
-  <div class="row" style="background-color: aliceblue;">
+<div class="mt-1 w-100" style="background-color: white">
+  <div >
     <div class="col-12 text-center mb-4" style="background-color: whitesmoke;">
-      <h4>Request for Quotation {{ tender.refNo }} </h4>
+      <h4> {{ headerText }} {{ tender.refNo }} </h4>
+      <div *ngIf="docsoutstanding" >
+        <app-notice [blinking]="'X'">
+        Click  <a href="https://google.com"> here </a> to upload Compliance Documents</app-notice>
+      </div>
+
     </div>
-    <div class="col-lg-6">
-      <div >
+    </div>
+    <div class="row">
+    <div class="col-4">
+      <h6><b>Bidder:</b> {{ tender.vendor  }} </h6>
         <h6><b>Reference:</b> {{ tender.refType + '-' + tender.refNo  }} </h6>
         <h6><b>Cutoff Date:</b> {{ tender.cutoff }} at {{ tender.cutofftime }}</h6>
+     </div>
+      <div class="col-4">
         <h6><b>Contact person: </b> {{ tender.contactName }}</h6>
         <h6><b>Email:</b> {{ tender.contactEmail }}</h6>
         <h6><b>Tel:</b> {{ tender.contactTel }}</h6>
-      </div>
-      <div class="row ml-1">
-        <app-rfq-items></app-rfq-items>
 
-      </div>
     </div>
+    <div class="col-4">
+      <h6><b>Alt Contact person: </b> {{ tender.altcontactName }}</h6>
+      <h6><b>Email:</b> {{ tender.altcontactEmail }}</h6>
+      <h6><b>Tel:</b> {{ tender.altcontactTel }}</h6>
 
-    <div class="col-lg-6">
-      <div class="row">
+  </div>
+    <!-- <div class="col-lg-6">
+     <button class="btn btn-outline-primary" (click)="showPanel('info')">Information </button>
+     <button class="btn btn-outline-primary" (click)="showPanel('docs')">Upload documents </button>
+     <button class="btn btn-outline-primary" (click)="showPanel('del')">Delivery Details </button>
+     <button class="btn btn-outline-primary" (click)="showPanel('info')">Comment </button>
+     </div> -->
+
+  </div>
+<div class="row mt-4 d-flex content-justify-ceenter">
+    <div class="col">
+      <div class="row ml-2 ">
         <ul class="nav nav-tabs">
           <li class="nav-item">
-            <a  [ngClass]="{'nav-link':true, 'active': panelname=='info'}" (click)="showPanel('info')" style="color:rgb(43, 43, 247);">Information</a>
+            <a  [ngClass]="{'nav-link':true, 'active': panelname=='quote'}" (click)="showPanel('quote')">Quote Items</a>
           </li>
           <li class="nav-item">
-            <a [ngClass]="{ 'nav-link':true, 'active': panelname=='docs'}" (click)="showPanel('docs')" style="color:rgb(43, 43, 247);">Upload Documents</a>
+            <a  [ngClass]="{'nav-link':true, 'active': panelname=='info'}" (click)="showPanel('info')" >Information</a>
           </li>
           <li class="nav-item">
-            <a [ngClass]="{ 'nav-link':true, 'active': panelname=='del'}" (click)="showPanel('del')"  style="color:rgb(43, 43, 247);">Delivery Details</a>
+            <a [ngClass]="{ 'nav-link':true, 'active': panelname=='docs'}" (click)="showPanel('docs')" >Upload Documents</a>
           </li>
-
+          <li class="nav-item">
+            <a [ngClass]="{ 'nav-link':true, 'active': panelname=='del'}" (click)="showPanel('del')" >Delivery Details</a>
+          </li>
+          <li class="nav-item">
+            <a [ngClass]="{ 'nav-link':true, 'active': panelname=='comment'}" (click)="showPanel('comment')" >Comment</a>
+          </li>
         </ul>
       </div>
-      <div class="row">
-        <div class="card w-100" style="min-height:200px;">
-          <div *ngIf="panelname==='info'" class="card-body pt-2 mb-4" >
+      <div class="row ml-1 mr-2">
+        <div class="card w-100" style="min-height:250px;">
+          <div *ngIf="panelname==='quote'" class="card-body pt-2 mb-4">
+            <div class="row ml-1 d-flex justify-content-center">
+              <app-rfq-items></app-rfq-items>
+
+            </div>
+          </div>
+          <div *ngIf="panelname==='info'" class="d-flex justify-content-center">
+           <div class="card-body pt-2 mb-4 col-6" >
             <div class="mb-2">
               <app-rfq-info [infoinput]="lclReqtext"></app-rfq-info>
             </div>
-
-
             <div class="mt-4">
               <button (click)="modalService.open('downloaddocs')" class=" btn btn-sm btn-outline-primary">Download Info
                 Documents</button>
             </div>
           </div>
-          <div *ngIf="panelname==='docs'" class="card-body pt-2 mb-4">
-            <div class="row w-100 d-flex justify-content-center mt-4 text-center"
-            style=" background-color: ghostwhite;">
-            <b>Documents uploaded</b>
           </div>
-          <div class="row w-100 ml-1">
+          <div *ngIf="panelname==='docs'" class="d-flex justify-content-center" >
+            <div class="col-6 mt-3 ">
+
+            <div class="card-body pt-2 mb-4"  >
             <ul class="w-100 list-group">
               <li class="list-group-item" *ngFor="let rfqdoc of apirfqdoc.tenderdoclist | async">
                 <div class="row">
@@ -76,7 +104,9 @@
               </li>
             </ul>
           </div>
-            </div>
+          </div>
+        </div>
+
             <div *ngIf="panelname==='del'" class="card-body pt-2 mb-4" >
               <div class=" text-center">
 
@@ -99,22 +129,39 @@
               </div>-->
             </div>
         </div>
+        <div *ngIf="panelname==='comment'" class="card-body pt-2 mb-4" >
+          <div class=" text-center">
 
-      </div>
-      </div>
+            <!-- <h2> Details for Delivery </h2>
+            <hr>-->
 
+            <b>
+              Comment or Response
+            </b>
+          </div>
+            <div class="row mt-2  ml-1 d-flex justify-content-center">
+              <div class="form-group">
+                <textarea id="right" rows="4" cols="80" class="form-control"
+                  placeholder="Additional Response Text can be added here" formControlName="response"></textarea>
+              </div>
+            </div>
+            <!-- <div class="mt-5 d-flex justify-content-center ">
+              <button class="btn btn-primary" (click)="modalService.close('delivery')">OK</button>
+            </div>
+          </div>
+          <div class="mt-4">
+            <a target="_blank" (click)="modalService.open('delivery')" class=" btn btn-sm btn-outline-primary">Delivery
+              Address</a>
+          </div>-->
+        </div>
+    </div>
+      </div>
+    </div>
+  </div>
 
       <div class="row">
         <form [formGroup]="responseform">
-          <b>
-            Comment or Response
-          </b>
-          <div class="row mt-2  ml-1">
-            <div class="form-group">
-              <textarea id="right" rows="4" cols="80" class="form-control"
-                placeholder="Additional Response Text can be added here" formControlName="response"></textarea>
-            </div>
-          </div>
+
 
 
           <div class="form-group ml-1">
@@ -129,14 +176,14 @@
 
       </div>
     </div>
-  </div>
+
 
   <!-- <div class="row" style="border-top: 1px solid gray;background-color: aliceblue; ">
   <div class=" w-100 d-flex justify-content-center mb-2">
     <h6>Please Respond</h6>
   </div>
 </div> -->
-</div>
+
 <div class="row mt-2 pt-2 pb-2 d-flex justify-content-around"
   style="border-top: 1px solid gray; background-color: lightsteelblue;">
   <a [routerLink]='["/"]' class="btn btn-sm btn-secondary" ngbTooltip="Remember to save ">

@@ -44,7 +44,15 @@ export class RfqAPIService {
   public currentfocusItemval: TenderItem;
 
   public currentUser: User;
-
+  private headerTextBS = new BehaviorSubject<string>('Request for Quotation');
+  public headerTextOB = this.headerTextBS.asObservable();
+  private standardTextBS = new BehaviorSubject<string[]>([`With almost 2 decades of experience within the facilities management sector,
+  we are renowned for having the most competent technical skills and experience within this sector,
+  covering all aspects of facilities management services generally, mechanical and electrical maintenance and
+  engineering, environmental health & safety, energy and project management.`,
+  `Your company has been selected to be eligible to quote us for work and services.
+  By selecting you as a bidder, we know that you have the same culture of service and quality`]);
+  public standardTextOB = this.standardTextBS.asObservable();
   public tenderdoclist = new BehaviorSubject<any>(null);
   public biddoclist = new BehaviorSubject<any>(null);
   public currentblob = new BehaviorSubject<Blob>(null);
@@ -54,7 +62,7 @@ export class RfqAPIService {
     this.auths.currentUser.subscribe(user => {
       this.currentUser = user;
     });
-
+    this.getStandards();
 
     this.selectedRFQ.subscribe(data => {
       if (data) {
@@ -82,29 +90,31 @@ export class RfqAPIService {
     });
   }
   /***************************************************** */
-  // updateRfqObj() {
-  // //  this.tenderLine.KEYS = JSON.stringify(this.rfqItems);
-  //   // Call API //
-  //   const httpOptions = {
-  //     headers: new HttpHeaders({
-  //       'Content-Type':  'application/json',
-  //       token: '6g9qGvRxsN',
-  //     })
-  //   };
-  //   const call2 = {
-  //         context: {
-  //             CLASS: 'FAQ',
-  //             TOKEN: '6g9qGvRxsN',
-  //             METHOD: 'POSTRFQOBJ'
-  //               },
-  //          data: this.tenderLine
-  //     };
-  //   this.http.post('https://io.bidvestfm.co.za/BIDVESTFM_API_ZRFC/request?sys=dev',
-  //         call2 , httpOptions).subscribe( data => {
-  //       console.log('posted');
-  //     });
+  getStandards() {
+  //  this.tenderLine.KEYS = JSON.stringify(this.rfqItems);
+    // Call API //
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        token: 'BK175mqMN0',
+      })
+    };
+    const call2 = {
+          context: {
+            CLASS: 'RFQ',
+            TOKEN: 'BK175mqMN0',
+            METHOD: 'RFQ_GETSTANDARDTEXT'
+                },
+           data: {STANDARDS: 'Yes',
+                  CONTEXT: ' '}
+      };
+    this.http.post('https://io.bidvestfm.co.za/BIDVESTFM_API_ZRFC/request?sys=dev',
+          call2 , httpOptions).subscribe( data => {
+        // tslint:disable-next-line:no-string-literal
+        this.standardTextBS.next(data['RESULT']['RESULT'] );
+      });
 
-  // }
+  }
   /***************************************************** */
   getRfqList(vendor: string) {
     const lrfqList: RFQHeader[] = [];
@@ -210,7 +220,16 @@ export class RfqAPIService {
                 this.docsOwingBS.next(rfqobj['JSONSET_JSTEXT']);
                 break;
               }
+              case 'HEADERTEXT': {
+                // tslint:disable-next-line:no-string-literal
+                this.headerTextBS.next(rfqobj['JSONSET_JSTEXT']);
+                break;
+              }
 
+              case 'STANDARDTEXT': {
+                // tslint:disable-next-line:no-string-literal
+                this.standardTextBS.next(JSON.parse(rfqobj['JSONSET_JSTEXT']));
+              }
             }
           });
         }
@@ -320,6 +339,9 @@ export class RfqAPIService {
       lcltender.contactEmail = controldates.CONTACTMAIL;
       lcltender.contactTel = controldates.CONTACTTEL;
       lcltender.contactName = controldates.CONTACTNAME;
+      lcltender.altcontactEmail = controldates.ALTCONTACTMAIL;
+      lcltender.altcontactTel = controldates.ALTCONTACTTEL;
+      lcltender.altcontactName = controldates.ALTCONTACTNAME;
       lcltender.locationname = controldates.LOCATIONNAME;
       lcltender.locationgps = controldates.LOCATIONGPS;
       const responsetemp = JSON.parse(this.tenderLine.value.DATA);

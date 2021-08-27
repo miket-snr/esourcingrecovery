@@ -61,6 +61,9 @@ export interface Tender  extends TenderReference {
    contactEmail?: string;
    contactTel?: string;
    contactName?: string ;
+   altcontactEmail?: string;
+   altcontactTel?: string;
+   altcontactName?: string ;
    tenderItems?: TenderItem[];
    response?: Bid;
 }
