@@ -13,13 +13,13 @@
         <a href="tel:0027126418000">+27 12 641 8000</a>
       </div>
 
-      <div class="col-lg-3 col-md-8 col-sm-8 ">
+      <!-- <div class="col-lg-3 col-md-8 col-sm-8 ">
         <img src="assets/images/email.png" alt="phone">
         <a href="mailto:info@bidvestfm.co.za">info@bidvestfm.co.za</a>
-      </div>
-      <div *ngIf="docsoutstanding" class ="col-lg-6 col-md-8 col-sm-8 ">
-        <app-notice [blinking]="'X'">
-        Click  <a href="https://google.com"> here </a> to upload Compliance Documents</app-notice>
+      </div> -->
+      <div class ="col-lg-6 col-md-8 col-sm-8 ">
+         <app-notice [blinking]="'X'">
+        {{ devdocsnotice }}</app-notice>
       </div>
     </div>
     <div class="row">

@@ -1,0 +1,36 @@
+<div class="row d-flex justify-content-center mt-100 mb-100">
+  <div class="col-lg-6">
+      <div class="card">
+          <div class="card-body text-center">
+              <h4 class="card-title">Latest Comments</h4>
+          </div>
+          <div class="comment-widgets">
+              <!-- Comment Row -->
+              <div *ngFor="let comment of comments" class="d-flex flex-row comment-row">
+                    <div class="comment-text w-100">
+                      <h6 class="font-medium">{{ comment.COMMENTBY }}</h6>  <app-rfq-info
+                       [infoinput]="comment.COMMENT_TEXT"
+                       [title]="''"
+                       [readmore]="''"></app-rfq-info>
+                      <div class="comment-footer"> <span class="text-muted float-right">{{ comment.DATEOF }}</span> </div>
+                  </div>
+              </div>
+              <div class="d-flex flex-row comment-row">
+                <div class="comment-text w-100">
+                    <h6 class="font-medium">Ask or Reply</h6>
+                    <div class="form-group">
+                      <textarea id="right" rows="4" cols="80" class="form-control"
+                        placeholder="Additional Response Text can be added here" [(ngModel)]="response"></textarea>
+                    </div>
+                    <div class="comment-footer"> <span class="text-muted float-right">{{ today.toLocaleString() }}</span> <button type="button" class="btn btn-cyan btn-sm" (click)="onSend()">Send</button>  </div>
+                </div>
+            </div>
+          </div> <!-- Card -->
+
+      </div>
+  </div>
+</div>
+<div class="row d-flex justify-content-center mt-100 mb-100">
+  <button type="button" class="btn btn-danger " (click)="modalService.close('askus')">Close</button>
+</div>
+

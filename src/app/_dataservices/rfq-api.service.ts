@@ -24,6 +24,8 @@ export class RfqAPIService {
   public currentTender = this.tender.asObservable();
   private docsOwingBS = new BehaviorSubject('');
   public docsoutstanding = this.docsOwingBS.asObservable();
+  private devProdBS = new BehaviorSubject('ECD');
+  public devProdOBS = this.devProdBS.asObservable();
   public bid: Bid;
   public apiReply: APIReply[];
   public replyDocs: RFQDocs[];
@@ -56,6 +58,8 @@ export class RfqAPIService {
   public tenderdoclist = new BehaviorSubject<any>(null);
   public biddoclist = new BehaviorSubject<any>(null);
   public currentblob = new BehaviorSubject<Blob>(null);
+  private rfqcommentsBS = new BehaviorSubject([]);
+  public rfqcommentsOB = this.rfqcommentsBS.asObservable();
 
   constructor(private http: HttpClient, private auths: AuthenticateService) {
 
@@ -116,6 +120,28 @@ export class RfqAPIService {
 
   }
   /***************************************************** */
+  putReassignment(newuser: any): Observable<any> {
+    //  this.tenderLine.KEYS = JSON.stringify(this.rfqItems);
+      // Call API //
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          token: 'BK175mqMN0',
+        })
+      };
+      const call2 = {
+            context: {
+              CLASS: 'RFQ',
+              TOKEN: 'BK175mqMN0',
+              METHOD: 'REASSIGN'
+                  },
+             data: { CONTEXT: JSON.stringify(newuser)}
+        };
+      return this.http.post('https://io.bidvestfm.co.za/BIDVESTFM_API_ZRFC/request?sys=dev',
+            call2 , httpOptions);
+
+    }
+    /***************************************************** */
   getRfqList(vendor: string) {
     const lrfqList: RFQHeader[] = [];
     let rfqtokenstring = '';
@@ -220,6 +246,11 @@ export class RfqAPIService {
                 this.docsOwingBS.next(rfqobj['JSONSET_JSTEXT']);
                 break;
               }
+              case 'DEVPROD': {
+                // tslint:disable-next-line:no-string-literal
+                this.devProdBS.next(rfqobj['JSONSET_JSTEXT']);
+                break;
+              }
               case 'HEADERTEXT': {
                 // tslint:disable-next-line:no-string-literal
                 this.headerTextBS.next(rfqobj['JSONSET_JSTEXT']);
@@ -229,6 +260,11 @@ export class RfqAPIService {
               case 'STANDARDTEXT': {
                 // tslint:disable-next-line:no-string-literal
                 this.standardTextBS.next(JSON.parse(rfqobj['JSONSET_JSTEXT']));
+                break;
+              }
+              case 'COMMENTS': {
+                // tslint:disable-next-line:no-string-literal
+                this.rfqcommentsBS.next(JSON.parse(rfqobj['JSONSET_JSTEXT']));
               }
             }
           });

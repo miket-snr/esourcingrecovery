@@ -8,6 +8,8 @@ import { ModalService } from '@app/_modal/modal.service';
 })
 export class RfqInfoComponent implements OnInit {
   @Input() infoinput: string;
+  @Input() readmore = 'X';
+  @Input() title = 'Information';
   public preview = '';
   public lclrequest = '';
   constructor(public modalService: ModalService) { }
@@ -15,10 +17,10 @@ export class RfqInfoComponent implements OnInit {
   ngOnInit() {
     const requestarray  = this.infoinput.replace('\\n', '').split('\\n');
     this.lclrequest = requestarray.join('<br />');
-    if ( requestarray.length > 2) {
+    if ( this.readmore === 'X' && requestarray.length > 2) {
         this.preview = requestarray[0] + '<br />' ;
         const mystr = (requestarray[1].length > 45) ? requestarray[1].substr(0, 44 )  : requestarray[1];
-        this.preview = this.preview + mystr + '( ...<b>Read More</b> )';
+        this.preview = this.preview + mystr + '( ... <b>Read More</b> )';
      } else {
         this.preview = requestarray.join('<br />');
     }

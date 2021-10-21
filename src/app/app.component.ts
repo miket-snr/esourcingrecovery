@@ -15,6 +15,7 @@ export class AppComponent implements OnInit, OnDestroy {
   username: string;
   msg = '';
   docsoutstanding = '';
+  devdocsnotice = '';
 
   constructor(  private authService: AuthenticateService, private router: Router, private rfqserv: RfqAPIService) {
      this.usersubscription = this.authService.currentUser.subscribe({
@@ -31,12 +32,19 @@ export class AppComponent implements OnInit, OnDestroy {
      this.rfqserv.docsoutstanding.subscribe((doc) => {
        this.docsoutstanding = doc ;
     });
+  //    this.rfqserv.devProdOBS.subscribe((doc) => {
+  //     this.devdocsnotice = (doc === 'ECD') ? 'This is the Development System' : 'Ensure your Admin Documents are up to date!' ;
+
+  //  });
      this.authService.message.subscribe(msg => {
        this.msg = msg;
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    const doc = window.location.href;
+    this.devdocsnotice = (doc.includes('DEV')) ? 'This is the Development System' : 'Ensure your Admin Documents are up to date!' ;
+    }
   ngOnDestroy() {
     this.usersubscription.unsubscribe();
   }

@@ -27,6 +27,9 @@ export class AuthenticateService {
     }
     this.currentUser = this.currentUserSubject.asObservable();
     this.rfqtoken = this.findGetParameter('ref');
+    this.token = localStorage.getItem('BFMtoken') || '';
+    //  Person could be valid but the BFM token could have expired -
+    // Go do URL validation and get aa new token if expired
     if (this.rfqtoken !== '') {
       this.checksignon(this.rfqtoken).subscribe(databack => {
         (databack !== 'Ok') ? this.sendMessage('Invalid link - Login please', true) :

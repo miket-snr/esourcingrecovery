@@ -47,9 +47,13 @@ export class EsourcingComponent implements OnInit {
   }
   chooselist(item) {
     this.rfqapis.selectedRFQ.next(item);
+    this.rfqapis.tender.asObservable().subscribe( dt => {
+      if (dt) {
+      this.router.navigate(
+        ['esourcing/rfq'] ) ;
+      }
+    });
 
-    this.router.navigate(
-        ['esourcing/rfq']
       //   ,
       //   {
       //     queryParams: {
@@ -58,7 +62,6 @@ export class EsourcingComponent implements OnInit {
       //     },
       //     queryParamsHandling: 'merge'
       // }
-      ) ;
 
   }
 

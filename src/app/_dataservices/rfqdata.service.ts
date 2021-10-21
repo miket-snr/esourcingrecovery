@@ -25,7 +25,7 @@ export class RfqdataService {
    });
    }
 
-//this.currentRFQItems.next( JSON.parse(this.tenderLine.KEYS)) ;
+// this.currentRFQItems.next( JSON.parse(this.tenderLine.KEYS)) ;
 /*          this.responseControl.next( JSON.parse(this.tenderLine.KEYS)) ;
           this.responseItems.next( JSON.parse(this.tenderLine.KEYS)) ;
           */

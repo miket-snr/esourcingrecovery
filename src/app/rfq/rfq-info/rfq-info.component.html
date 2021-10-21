@@ -1,6 +1,8 @@
 
         <div >
-          <b>Information</b>
+         <div *ngIf="title">
+          <b>{{ title }}</b>
+         </div>
           <div class="card " style="background-color: aliceblue; border:none;">
                <div (click)= "modalService.open('requestmore')" [innerHTML]="preview" style="font-size: small;"></div>
 

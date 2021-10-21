@@ -58,8 +58,8 @@ export class RfqItemsComponent implements OnInit {
        const mypage = {index: i + 1, min: i * pagesize , max: i * pagesize + pagesize - 1 };
        this.pageframes.push(mypage);
       }
-    this.dirty = this.currentTender.tenderItems.reduce( ( a, b) =>
-       a.BIDPRICE < b.BIDPRICE ? a : b  );
+    this.dirty = (this.currentTender && this.currentTender.tenderItems) ? this.currentTender.tenderItems.reduce( ( a, b) =>
+       a.BIDPRICE < b.BIDPRICE ? a : b  ) : 0;
     this.rfqapi.openitems = this.dirty.BIDPRICE ;
   }
   // tslint:disable-next-line: use-lifecycle-interface

@@ -28,6 +28,7 @@ import { RfqInfoComponent } from './rfq/rfq-info/rfq-info.component';
 import { SigninComponent } from './auth/signin/signin.component';
 import { SignupComponent } from './auth/signup/signup.component';
 import { NoticeComponent } from './notice/notice.component';
+import { AskUsComponent } from './ask-us/ask-us.component';
 
 
 @NgModule({
@@ -44,7 +45,8 @@ import { NoticeComponent } from './notice/notice.component';
     RfqInfoComponent,
     SigninComponent,
     SignupComponent,
-    NoticeComponent],
+    NoticeComponent,
+    AskUsComponent],
   imports: [
     BrowserModule,
     FormsModule,

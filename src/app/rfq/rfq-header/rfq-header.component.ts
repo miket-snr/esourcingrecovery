@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy, Output } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, ViewChild } from '@angular/core';
 import { RFQHeader, DMSHeader, RfqControl, Tender } from '@app/_models';
 import { RfqAPIService } from '@app/_dataservices/rfq-api.service';
 import { FileSaverService } from 'ngx-filesaver';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ModalService } from '@app/_modal';
 
@@ -12,6 +12,7 @@ import { ModalService } from '@app/_modal';
   styleUrls: ['./rfq-header.component.less']
 })
 export class RfqHeaderComponent implements OnInit, OnDestroy {
+  @ViewChild('f', {static: false}) reassignform: NgForm;
   public docsload = 'UP';
   public docsdirection = 'Show Docs for Download';
   public panelname = 'quote';
@@ -92,6 +93,12 @@ export class RfqHeaderComponent implements OnInit, OnDestroy {
   showPanel( panelname = 'quote') {
     this.panelname = panelname;
   }
+  showModal(mname = 'reassign') {
+    this.modalService.open(mname);
+  }
+  closeModal(mname = 'reassign') {
+    this.modalService.close(mname);
+  }
   reject() {
     const textout = (this.rejectionOnce) ? this.rejectionText + '- We want to Quote in Future' :
       this.rejectionText + '- We DO NOT want to Quote in Future';
@@ -119,7 +126,7 @@ export class RfqHeaderComponent implements OnInit, OnDestroy {
   }
   public sendresponse(response) {
     // this.apirfqdoc.tenderLine.TAGS = this.responseform.get('response').value;
-    this.apirfqdoc.postResponse(this.responseform.get('response').value).subscribe(data => {
+
       this.apirfqdoc.postValidity(this.responseform.get('validity').value).subscribe(data2 => {
         const x = data2;
         if (response === 'commit') {
@@ -131,11 +138,23 @@ export class RfqHeaderComponent implements OnInit, OnDestroy {
           alert('Changes saved');
         }
       });
-    });
-
   }
   previewopen() {
     //  dataService.getRFQPerVendor('506452');
+  }
+  reloadMe() {
+    const newuser = this.reassignform.value;
+    const lclcontext = {
+      GUID: this.tender.guid,
+      EMAIL: this.apirfqdoc.currentUser.username.toLocaleUpperCase(),
+      NEWMAIL: newuser.email,
+      USERNAME: newuser.username,
+      CELLNO: newuser.cellno
+    };
+    this.apirfqdoc.putReassignment(lclcontext).subscribe( data => {
+      // tslint:disable-next-line:no-string-literal
+      window.location.href = '/';
+    });
   }
   loaddoc(files: File[]) {
     this.myFile = files[0].name;
