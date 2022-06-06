@@ -8,13 +8,13 @@
       <div class="card-body" style="background-color: aliceblue;" *ngIf="tabIndex[0]">
         <div class="row">
           <div class="col-12 text-center mb-4" style="background-color: whitesmoke;">
-            <h4>Request for Quotation {{ apirfqdoc.currentTender.rfqNo }} </h4>
+            <h4>Request for Quotation {{ tender.rfqNo }} </h4>
           </div>
           <div class="col-lg-5">
-            <h6>Cutoff Date: {{ apirfqdoc.currentTender.cutoff }} at {{ apirfqdoc.currentTender.cutofftime }}</h6>
-            <h6>Contact person: {{ apirfqdoc.tender.contactName }}</h6>
-            <h6>Email: {{ apirfqdoc.tender.contactEmail }}</h6>
-            <h6>Tel: {{ apirfqdoc.tender.contactTel }}</h6>
+            <h6>Cutoff Date: {{ tender.cutoff }} at {{ tender.cutofftime }}</h6>
+            <h6>Contact person: {{ tender.contactName }}</h6>
+            <h6>Email: {{ tender.contactEmail }}</h6>
+            <h6>Tel: {{ tender.contactTel }}</h6>
           </div>
           <div class="col-lg-7">
             <div class="row">

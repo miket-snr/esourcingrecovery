@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 })
 export class SigninComponent implements OnInit, OnDestroy {
   public usesignin = 'reset';
-  public commethod = 'SMS';
+  public commethod = 'EMAIL';
   public username = '';
   public cellno = '';
   public newpwd3 = '';
@@ -63,7 +63,7 @@ export class SigninComponent implements OnInit, OnDestroy {
           if (this.temptoken === 'OK') {
             this.onSelect('otp');
             this.newpwd4 =
-              'An One-Time Password has been sent to your ' + this.commethod;
+              'An One-Time Password has been sent to your ' + this.commethod + ' Please check your Spam Folder if not received';
           }
         }
       });

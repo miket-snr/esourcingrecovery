@@ -14,19 +14,29 @@ export class AuthenticateService {
   public message = this.subject.asObservable();
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
+  doc = window.location.href;
+  devprod = '';
 
   constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient) {
     const cu = localStorage.getItem('currentUser') || '';
+    this.devprod = (this.doc.toUpperCase().includes('DEV') || this.doc.toUpperCase().includes('LOCAL') ) ? 'DEV' : 'PROD' ;
     if (cu.length > 15) {
+      const temp = JSON.parse(localStorage.getItem('currentUser')) ;
+      if (temp.username > '') {
       this.currentUserSubject = new BehaviorSubject<User>(
-        { ...environment.tempuser, ...JSON.parse(localStorage.getItem('currentUser')) }
+       { ...environment.tempuser, ...temp}
       );
     } else {
       this.currentUserSubject = new BehaviorSubject<User>(
         { ...environment.tempuser });
     }
+  } else {
+    this.currentUserSubject = new BehaviorSubject<User>(
+      { ...environment.tempuser });
+  }
+
     this.currentUser = this.currentUserSubject.asObservable();
-    this.rfqtoken = this.findGetParameter('ref');
+    this.rfqtoken =  this.findGetParameter('ref') || '';
     this.token = localStorage.getItem('BFMtoken') || '';
     //  Person could be valid but the BFM token could have expired -
     // Go do URL validation and get aa new token if expired
@@ -40,14 +50,16 @@ export class AuthenticateService {
       this.token = localStorage.getItem('BFMtoken') || '';
 
     }
+
   }
 
 
   findGetParameter(parameterName: string) {
     let result = '';
     let tmp = [];
-    location.search
-      .substr(1)
+    tmp = location.href.split('?');
+    if (tmp && tmp.length > 1) {
+    tmp[1].substr(1)
       .split('&')
       .forEach((item) => {
         tmp = item.split('=');
@@ -55,6 +67,7 @@ export class AuthenticateService {
           result = decodeURIComponent(tmp[1]);
         }
       });
+    }
     return result;
   }
   sendMessage(message: string, login = false) {
@@ -122,6 +135,7 @@ export class AuthenticateService {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/x-www-form-urlencoded',
+        runon: this.devprod,
         username: email,
         password,
         Authorization: 'Bearer 123456',
@@ -164,12 +178,17 @@ export class AuthenticateService {
   getUserDetails() {
     const lcluser = new User();
     const context = '{TOKEN:' + this.token + '}';
+    const headers = new HttpHeaders()
+    .set('Content-Type', 'application/json; charset=utf-8')
+    .set('Authorization', 'Bearer 123456')
+    .set('apikey', 'GENAPP')
+    .set('runon', this.devprod);
     const params = new HttpParams()
       .set('Partner', 'ALL')
       .set('Class', 'USER')
       .set('CallContext', context);
     this.http
-      .get<any>(environment.BASE_API + '/api/GETFLEX', { params })
+      .get<any>(environment.BASE_API + '/api/GETFLEX'   , { params, headers })
       .subscribe(data => {
         if (data.ServicesList instanceof Array) {
           const tempObj = JSON.parse(data.ServicesList[0].JsonsetJstext);
@@ -194,17 +213,18 @@ export class AuthenticateService {
     if (!this.token || this.token.length < 6) {
       this.token = '123456';
     }
+
     const headers = new HttpHeaders()
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Authorization', 'Bearer 123456')
       .set('apikey', 'GENAPP')
-      .set('runon', 'DEV');
+      .set('runon', this.devprod);
     const params = new HttpParams()
       .set('Partner', 'ALL')
       .set('Class', 'PWDR')
       .set('CallContext', JSON.stringify(luser));
     return this.http.get<any>(environment.BASE_API + '/api/SAP/RFQ/SENDOTP', {
-      params
+      params, headers
     });
   }
   /* ************************************************************* */
@@ -221,7 +241,7 @@ export class AuthenticateService {
       .set('Content-Type', 'application/json; charset=utf-8')
       .set('Authorization', 'Bearer 123456')
       .set('apikey', 'GENAPP')
-      .set('runon', 'DEV');
+      .set('runon', this.devprod);
     const params = new HttpParams()
       .set('Partner', 'ALL')
       .set('Class', 'OTPC')
@@ -249,7 +269,7 @@ export class AuthenticateService {
               this.currentUserSubject.next(lcluser);
               return 'ok';
             } else {
-              return ' Error';
+              return tempObj.MESSAGE;
             }
           }
         }));
@@ -260,6 +280,7 @@ export class AuthenticateService {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/x-www-form-urlencoded',
+        runon: this.devprod,
         token,
         password,
         Authorization: 'Bearer 123456',
@@ -322,6 +343,7 @@ export class AuthenticateService {
     const params = new HttpParams()
       .set('Partner', 'ALL')
       .set('Class', 'PWDN')
+      .set('runon', this.devprod)
       .set('CallContext', context);
     this.http
       .get<any>(environment.BASE_API + '/api/GETFLEX', { params })

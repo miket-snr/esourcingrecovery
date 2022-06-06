@@ -19,6 +19,8 @@ export class RfqAPIService {
   rfqList = this.RFQList.asObservable();
   selectedRFQ = new BehaviorSubject<RFQHeader>(null);
   public rfqDoc = this.selectedRFQ.asObservable();
+  devproddetermine = window.location.href;
+  devprod = '';
 
   public tender = new BehaviorSubject<Tender>(null);
   public currentTender = this.tender.asObservable();
@@ -63,6 +65,8 @@ export class RfqAPIService {
 
   constructor(private http: HttpClient, private auths: AuthenticateService) {
 
+    // tslint:disable-next-line:max-line-length
+    this.devprod =  (this.devproddetermine.toUpperCase().includes('DEV') || this.devproddetermine.toUpperCase().includes('LOCAL') ) ? 'DEV' : 'PROD' ;
     this.auths.currentUser.subscribe(user => {
       this.currentUser = user;
     });
@@ -112,7 +116,7 @@ export class RfqAPIService {
            data: {STANDARDS: 'Yes',
                   CONTEXT: ' '}
       };
-    this.http.post('https://io.bidvestfm.co.za/BIDVESTFM_API_ZRFC/request?sys=dev',
+    this.http.post('https://io.bidvestfm.co.za/BIDVESTFM_API_ZRFC/request?sys=' + this.devprod,
           call2 , httpOptions).subscribe( data => {
         // tslint:disable-next-line:no-string-literal
         this.standardTextBS.next(data['RESULT']['RESULT'] );
@@ -137,7 +141,7 @@ export class RfqAPIService {
                   },
              data: { CONTEXT: JSON.stringify(newuser)}
         };
-      return this.http.post('https://io.bidvestfm.co.za/BIDVESTFM_API_ZRFC/request?sys=dev',
+      return this.http.post('https://io.bidvestfm.co.za/BIDVESTFM_API_ZRFC/request?sys=' + this.devprod ,
             call2 , httpOptions);
 
     }
@@ -157,13 +161,18 @@ export class RfqAPIService {
       this.auths.currentUserValue.username +
       rfqtokenstring +
       ',VENDOR:' + vendor + ',HEADER:X }';
+    const headers = new HttpHeaders()
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .set('Authorization', 'Bearer 123456')
+      .set('apikey', 'GENAPP')
+      .set('runon', this.devprod);
     const params = new HttpParams()
       .set('Partner', 'ALL')
       .set('Class', 'RFQL')
       .set('CallContext', context);
     this.http
       .get<any>(environment.BASE_API + '/api/sap/rfq/getlist/email', {
-        params
+        params , headers
       })
       .subscribe(data => {
         if (data.ServicesList instanceof Array) {
@@ -212,7 +221,7 @@ export class RfqAPIService {
         CONTEXT: context
       }
     };
-    return this.http.post<any>('https://io.bidvestfm.co.za/BIDVESTFM_API_ZRFC/request?sys=dev',
+    return this.http.post<any>('https://io.bidvestfm.co.za/BIDVESTFM_API_ZRFC/request?sys=' + this.devprod,
       call2, httpOptions)
       .pipe(map(data => {
         // tslint:disable-next-line:no-string-literal
@@ -337,10 +346,29 @@ export class RfqAPIService {
         CONTEXT: context
       }
     };
-    return this.http.post<any>('https://io.bidvestfm.co.za/BIDVESTFM_API_ZRFC/request?sys=dev',
+    return this.http.post<any>('https://io.bidvestfm.co.za/BIDVESTFM_API_ZRFC/request?sys=' + this.devprod ,
       call2, httpOptions);
   }
-  /*************************************************/
+   /***************************************************** */
+    removeBidmDoc(rfqdoc) {
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          token: 'BK175mqMN0',
+        })
+      };
+      const call2 = {
+        context: {
+          CLASS: 'RFQ',
+          TOKEN: 'BK175mqMN0',
+          METHOD: 'RFQ_REMOVEDOC'
+        },
+        data: rfqdoc
+      };
+      return this.http.post<any>('https://io.bidvestfm.co.za/BIDVESTFM_API_ZRFC/request?sys=' + this.devprod ,
+        call2, httpOptions);
+    }
+    /*************************************************/
   buildTender() {
     let lcltender: Tender;
     if (this.tenderHeader.value !== null && this.tenderLine.value !== null) {
@@ -397,12 +425,17 @@ export class RfqAPIService {
     const lclsubmilist = [];
     const lclchosenlist = [];
     const context = '{APIKEY:RFQ, DOCNO:' + rfqno + ',COUNTER:0 }';
+    const headers = new HttpHeaders()
+    .set('Content-Type', 'application/json; charset=utf-8')
+    .set('Authorization', 'Bearer 123456')
+    .set('apikey', 'GENAPP')
+    .set('runon', this.devprod);
     const params = new HttpParams()
       .set('Partner', 'ALL')
       .set('Class', 'RFDL')
       .set('CallContext', context);
     this.http
-      .get<any>(environment.BASE_API + '/api/GETFLEX', { params })
+      .get<any>(environment.BASE_API + '/api/GETFLEX', { params , headers})
       .subscribe(data => {
         if (data.ServicesList instanceof Array) {
           for (const rfqdoc of data.ServicesList) {
@@ -453,12 +486,18 @@ export class RfqAPIService {
   getvendordoc(docref: DMSHeader) {
     let datain = '';
     const context = docref.APIKEY + '-' + docref.DOCNO + '-' + docref.COUNTER;
+    const headers = new HttpHeaders()
+    .set('Content-Type', 'application/json; charset=utf-8')
+    .set('Authorization', 'Bearer 123456')
+    .set('apikey', 'GENAPP')
+    .set('runon', this.devprod);
     const params = new HttpParams()
       .set('Partner', 'ALL')
       .set('Class', 'RFQD')
+      .set('runon', this.devprod)
       .set('CallContext', context);
     this.http
-      .get<any>(environment.BASE_API + '/api/GETFLEX', { params })
+      .get<any>(environment.BASE_API + '/api/GETFLEX', { params , headers})
       .subscribe(data => {
         if (data.ServicesList instanceof Array) {
           for (const dmsdoc of data.ServicesList) {
@@ -530,19 +569,29 @@ export class RfqAPIService {
         apikey: 'RFQQUOTE'
       }
     };
-    this.http
-      .post<any>(environment.BASE_POST, uploadvar, httpOptions)
-      .subscribe(
-        data => {
-          console.log(data);
-
-        },
-        e => {
-          console.log(e);
-        }
-      );
+    return   this.http
+      .post<any>(environment.BASE_POST + '?sys=' + this.devprod , uploadvar, httpOptions);
   }
   /*********************************** */
+
+  getQuoteDocs(callist) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        token: 'BK175mqMN0',
+      })
+    };
+    const call2 = {
+      context: {
+        CLASS: 'RFQ',
+        TOKEN: 'BK175mqMN0',
+        METHOD: 'RFQ_GETDOCLIST'
+      },
+      data: callist
+    };
+    return this.http.post<any>('https://io.bidvestfm.co.za/BIDVESTFM_API_ZRFC/request?sys=' + this.devprod ,
+      call2, httpOptions);
+  }
   // updateSAPItem(line: TenderItem) {
   //     let lcldatestr = '';
   //     const date = new Date();

@@ -86,7 +86,7 @@
                     <span> {{ rfqdoc.ORIGINALNAME }} </span>
                   </div>
                   <div class="col-2">
-                    <button class="btn btn-sm btn-secondary">Remove</button>
+                    <button class="btn btn-sm btn-secondary"(click)="removeDoc(rfqdoc)">Remove</button>
                   </div>
                 </div>
               </li>
@@ -332,11 +332,17 @@
           ngModel
           name="cellno" >
         </div>
+
     <div class="mt-4 d-flex justify-content-around ">
       <button [disabled]="!f.valid" class="btn btn-primary" type="submit">Ok</button>
       <button type="button" class="btn btn-danger" (click)="modalService.close('reassign')">Cancel</button>
     </div>
+
   </form>
+  <div class="card-footer">
+    <p>The personal details collected here are only for the purpose of your quotes.</p>
+    <p> The details will not be shared nor will they be made available to any external parties.</p>
+  </div>
 </div>
   </div>
 </jw-modal>

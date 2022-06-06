@@ -11,5 +11,3 @@ Forgottten Passwords can be set via OTP sent by Email or SMS.
 Esourcing -> 
 this.rfqapis.getRfqList(this.rfqapis.currentUser.username);
 
-
-

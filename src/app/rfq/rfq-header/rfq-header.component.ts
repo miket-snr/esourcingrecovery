@@ -5,6 +5,7 @@ import { FileSaverService } from 'ngx-filesaver';
 import { FormBuilder, FormGroup, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ModalService } from '@app/_modal';
+import { borderTopRightRadius } from 'html2canvas/dist/types/css/property-descriptors/border-radius';
 
 @Component({
   selector: 'app-rfq-header',
@@ -12,7 +13,7 @@ import { ModalService } from '@app/_modal';
   styleUrls: ['./rfq-header.component.less']
 })
 export class RfqHeaderComponent implements OnInit, OnDestroy {
-  @ViewChild('f', {static: false}) reassignform: NgForm;
+  @ViewChild('f', { static: false }) reassignform: NgForm;
   public docsload = 'UP';
   public docsdirection = 'Show Docs for Download';
   public panelname = 'quote';
@@ -54,19 +55,21 @@ export class RfqHeaderComponent implements OnInit, OnDestroy {
         ['esourcing']);
     }
     this.apirfqdoc.docsoutstanding.subscribe((doc) => {
-      this.docsoutstanding = doc ;
-   });
+      this.docsoutstanding = doc;
+    });
     this.apirfqdoc.currentTender.subscribe(tenderdata => {
       if (tenderdata) {
         this.tender = tenderdata;
       }
     });
-    this.apirfqdoc.headerTextOB.subscribe( (txt) => {
+    this.apirfqdoc.headerTextOB.subscribe((txt) => {
       this.headerText = txt;
     });
 
     if (this.tender) {
-      this.tendergps = 'https://www.google.com/maps/search/?api=1&query=' + this.tender.locationgps.split(';').join(',');
+
+      // tslint:disable-next-line:max-line-length
+      this.tendergps = (this.tender.locationgps) ? 'https://www.google.com/maps/search/?api=1&query=' + this.tender.locationgps.split(';').join(',') : '';
 
       if (this.tender.response) {
         this.responseform.setValue({
@@ -90,7 +93,7 @@ export class RfqHeaderComponent implements OnInit, OnDestroy {
       this.biddoclist = items;
     });
   }
-  showPanel( panelname = 'quote') {
+  showPanel(panelname = 'quote') {
     this.panelname = panelname;
   }
   showModal(mname = 'reassign') {
@@ -127,17 +130,17 @@ export class RfqHeaderComponent implements OnInit, OnDestroy {
   public sendresponse(response) {
     // this.apirfqdoc.tenderLine.TAGS = this.responseform.get('response').value;
 
-      this.apirfqdoc.postValidity(this.responseform.get('validity').value).subscribe(data2 => {
-        const x = data2;
-        if (response === 'commit') {
-          this.apirfqdoc.postCommit('commit').subscribe(data3 => {
-            const x3 = false;
-            this.router.navigate(['/']);
-          });
-        } else {
-          alert('Changes saved');
-        }
-      });
+    this.apirfqdoc.postValidity(this.responseform.get('validity').value).subscribe(data2 => {
+      const x = data2;
+      if (response === 'commit') {
+        this.apirfqdoc.postCommit('commit').subscribe(data3 => {
+          const x3 = false;
+          this.router.navigate(['/']);
+        });
+      } else {
+        alert('Changes saved');
+      }
+    });
   }
   previewopen() {
     //  dataService.getRFQPerVendor('506452');
@@ -151,7 +154,7 @@ export class RfqHeaderComponent implements OnInit, OnDestroy {
       USERNAME: newuser.username,
       CELLNO: newuser.cellno
     };
-    this.apirfqdoc.putReassignment(lclcontext).subscribe( data => {
+    this.apirfqdoc.putReassignment(lclcontext).subscribe(data => {
       // tslint:disable-next-line:no-string-literal
       window.location.href = '/';
     });
@@ -172,28 +175,32 @@ export class RfqHeaderComponent implements OnInit, OnDestroy {
       //   const d = new Date();
       const docno = this.tender.rfqNo;
       const vendor = this.tender.guid;
-      this.apirfqdoc.uploadQuoteFile2SAP(files, dataURL, docno, vendor);
-      biddocs.push(
-        {
-          MANDT: '',
-          APIKEY: '',
-          DOCNO: '',
-          PARTNER: '',
-          COUNTER: '',
-          CONTENT: '',
-          DATELOADED: '',
-          LOADEDBY: '',
-          IMPORTED: '',
-          ORIGINALNAME: this.myFile,
-          FILESIZE: '',
-          MIMETYPE: '',
-          CHARSHOLDER: ''
-        });
-      this.apirfqdoc.tenderdoclist.next(biddocs);
-      //     .then(function() {
-      //       $location.path('/tenders');
-      //     });
-      //   //  }) ;
+      this.apirfqdoc.uploadQuoteFile2SAP(files, dataURL, docno, vendor).subscribe(
+        data => {
+       const callist =    {
+            MANDT: '',
+            APIKEY: 'RFQQUOTE',
+            DOCNO: docno,
+            PARTNER: vendor,
+            COUNTER: '',
+            CONTENT: '',
+            DATELOADED: '',
+            LOADEDBY: '',
+            IMPORTED: '',
+            ORIGINALNAME: this.myFile,
+            FILESIZE: '',
+            MIMETYPE: '',
+            CHARSHOLDER: ''
+          };
+       this.apirfqdoc.getQuoteDocs(callist).subscribe(res => {
+          this.apirfqdoc.tenderdoclist.next(res.RESULT);
+         });
+        },
+        // tslint:disable-next-line:no-shadowed-variable
+        e => {
+          console.log(e);
+        }
+      );
     };
     reader.readAsDataURL(files[0]);
   }
@@ -234,6 +241,15 @@ export class RfqHeaderComponent implements OnInit, OnDestroy {
         //  				 if (ie || oldIE || ieEDGE) {
         this.filesaver.save(datain, row.ORIGINALNAME);
         this.apirfqdoc.currentblob.next(null);
+      }
+    });
+  }
+  removeDoc(rfqdoc: any) {
+    this.apirfqdoc.removeBidmDoc(rfqdoc).subscribe(reply => {
+      if (reply && reply.RESULT && reply.RESULT[0]) {
+       this.apirfqdoc.getQuoteDocs(rfqdoc).subscribe(res => {
+        this.apirfqdoc.tenderdoclist.next(res.RESULT);
+       });
       }
     });
   }

@@ -39,18 +39,18 @@
   <div class="row pt-3 pb-3">
     <div class="col-xs-12 col-sm-8 col-md-5 offset-sm-1  offset-md-3">
       <div class="card ">
-        <div class="card-header"> Select a Method for OTP Receipt</div>
+        <div class="card-header"> Request OTP Receipt</div>
         <div class="card-body pt2">
           <div class="form-group">
             <label for="uname">User Email:</label>
             <input type="text" class="form-control" [(ngModel)]="username" id="uname">
           </div>
-          <label>
+          <!-- <label>
             <input type="radio" [(ngModel)]="commethod" name="SMS" value="SMS" (change)="onRadioChange('SMS')" />
             SMS OTP</label> <br>
           <label>
             <input type="radio" [(ngModel)]="commethod" name="EMAIL" value="EMAIL" (change)="onRadioChange('EMAIL')" />
-            Email OTP</label>
+            Email OTP</label> -->
         </div>
 
         <div class="card-footer" [hidden]="commethod !=='SMS'">

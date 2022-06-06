@@ -42,8 +42,9 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const doc = window.location.href;
-    this.devdocsnotice = (doc.includes('DEV')) ? 'This is the Development System' : 'Ensure your Admin Documents are up to date!' ;
+    const doc = window.location.href.toUpperCase();
+    // tslint:disable-next-line:max-line-length
+    this.devdocsnotice = (doc.indexOf('DEV') > 5) ? 'This is the Development System' : 'Ensure your Admin Documents are up to date!' ;
     }
   ngOnDestroy() {
     this.usersubscription.unsubscribe();
